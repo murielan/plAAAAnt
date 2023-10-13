@@ -15,6 +15,7 @@ class MainActivity : ComponentActivity() {
 
         //TODO: correct naming of app and all files, namespace, applicationId etc. (do not use TheUi, TheModel, TheApp etc.) - check gradle files!
         model = TheModel
+        model.connectAndSubscribe()
 
         setContent {
             AppUI(model)

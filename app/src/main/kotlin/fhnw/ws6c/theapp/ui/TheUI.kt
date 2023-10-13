@@ -26,6 +26,9 @@ fun AppUI(model : TheModel){
                     Text(text = "Material 3 Button")
                 }
                 Switch(checked = boolean, onCheckedChange = { boolean = !boolean })
+                Text(text  = "Values received: $valuesReceived",
+                    style = TextStyle(fontSize = 14.sp)
+                )
             }
     }
 }
