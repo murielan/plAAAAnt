@@ -1,4 +1,4 @@
-package fhnw.ws6c.theapp.ui.screen
+package fhnw.ws6c.theapp.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,10 +28,11 @@ fun HomeScreen(model: TheModel) {
             Switch(checked = boolean, onCheckedChange = { boolean = !boolean })
             */
             Text(text  = "Values received: $measurementsReceived",
-                style = TextStyle(fontSize = 14.sp)
+                style = TextStyle(fontSize = 14.sp),
+                modifier = Modifier.padding(vertical = 20.dp)
             )
             if(allMeasurements.isNotEmpty()) {
-                Text(text = "For the Sensor ${allMeasurements.last().sensorId} a humidity of " +
+                Text(text = "For the sensor ${allMeasurements.last().sensorId} a humidity of " +
                         "${allMeasurements.last().humidity} has been measured at ${allMeasurements.last().time.toString()}")
             }
         }
