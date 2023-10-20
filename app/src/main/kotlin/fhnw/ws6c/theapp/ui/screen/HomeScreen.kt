@@ -3,8 +3,6 @@ package fhnw.ws6c.theapp.ui.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,14 +22,17 @@ fun HomeScreen(model: TheModel) {
             Text(text  = "PlAAAAnt",
                 style = TextStyle(fontSize = 36.sp)
             )
-            Button(onClick = { boolean = !boolean }) {
+            /*Button(onClick = { boolean = !boolean }) {
                 Text(text = "Material 3 Button")
             }
             Switch(checked = boolean, onCheckedChange = { boolean = !boolean })
+            */
             Text(text  = "Values received: $measurementsReceived",
                 style = TextStyle(fontSize = 14.sp)
             )
-            Text(text = "${allMeasurements.last().humidity}")
+            if(allMeasurements.isNotEmpty()) {
+                Text(text = "${allMeasurements.last().humidity}")
+            }
         }
     }
 }
