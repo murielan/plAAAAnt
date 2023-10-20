@@ -31,7 +31,8 @@ fun HomeScreen(model: TheModel) {
                 style = TextStyle(fontSize = 14.sp)
             )
             if(allMeasurements.isNotEmpty()) {
-                Text(text = "${allMeasurements.last().humidity}")
+                Text(text = "For the Sensor ${allMeasurements.last().sensorId} a humidity of " +
+                        "${allMeasurements.last().humidity} has been measured at ${allMeasurements.last().time.toString()}")
             }
         }
     }

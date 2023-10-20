@@ -8,9 +8,10 @@ data class Measurement(
     val humidity: Int = 0,
     val time: Timestamp
 ) {
+    // { "sensorId": 4, "humidity": 652, "time": 1697804398896}
     constructor(json: JSONObject) : this(
         sensorId = json.getInt("sensorId"),
         humidity = json.getInt("humidity"),
-        time = Timestamp(json.getLong("time"))
+        time = Timestamp(json.getLong("time")) // milliseconds since January 1, 1970, 00:00:00 GMT
     )
 }
