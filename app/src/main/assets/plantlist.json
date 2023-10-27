@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Fridolin",
+    "place": "Wohnzimmer",
+    "birthday": "1697804398896",
+    "picture": "",
+    "sensorId": 1
+  },
+  {
+    "id": 2,
+    "name": "Blattito",
+    "place": "Schlafzimmer",
+    "birthday": "1697804398896",
+    "picture": "",
+    "sensorId": 2
+  },
+  {
+    "id": 3,
+    "name": "Fridolin",
+    "place": "Schlafzimmer",
+    "birthday": "1697804398896",
+    "picture": "",
+    "sensorId": 3
+  }
+]
