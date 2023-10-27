@@ -7,7 +7,7 @@ import fhnw.ws6c.theapp.model.Screen
 import fhnw.ws6c.theapp.ui.screens.HomeScreen
 
 @Composable
-fun AppUI(model: PlantModel) {
+fun PlAAAAntUI(model: PlantModel) {
     with(model) {
         Crossfade(targetState = currentScreen, label = "") { screen ->
             when {

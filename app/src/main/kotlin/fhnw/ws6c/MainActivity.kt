@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import fhnw.ws6c.theapp.data.PlantRepository
 import fhnw.ws6c.theapp.model.PlantModel
-import fhnw.ws6c.theapp.ui.AppUI
+import fhnw.ws6c.theapp.ui.PlAAAAntUI
 
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         model.connectAndSubscribe()
 
         setContent {
-            AppUI(model)
+            PlAAAAntUI(model)
         }
     }
 

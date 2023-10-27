@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id "org.jetbrains.kotlin.kapt" //room
+    id "org.jetbrains.kotlin.kapt"
+    id 'com.google.gms.google-services'//room
 }
 
 android {
@@ -77,6 +78,8 @@ dependencies {
 
     // fuer den Layout Inspector
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation 'com.google.firebase:firebase-storage:20.3.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.9.1'
 
     //Unit tests
     testImplementation 'junit:junit:4.13.2'
@@ -119,4 +122,11 @@ dependencies {
 
     //Lotti Animations
     implementation 'com.airbnb.android:lottie-compose:6.1.0'
+
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:32.4.1"))
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-firestore-ktx")
 }

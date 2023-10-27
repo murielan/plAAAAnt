@@ -14,4 +14,9 @@ data class Measurement(
         humidity = json.getInt("humidity"),
         time = Timestamp(json.getLong("time")) // milliseconds since January 1, 1970, 00:00:00 GMT
     )
+    constructor(linkedHash: LinkedHashMap<String, Any>) : this(
+        sensorId = linkedHash["sensorId"] as Int,
+        humidity = linkedHash["humidity"] as Int,
+        time = Timestamp(linkedHash["time"] as Long)
+    )
 }
