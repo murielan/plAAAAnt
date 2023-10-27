@@ -3,18 +3,21 @@ package fhnw.ws6c
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import fhnw.ws6c.theapp.model.TheModel
+import fhnw.ws6c.theapp.data.PlantRepository
+import fhnw.ws6c.theapp.model.PlantModel
 import fhnw.ws6c.theapp.ui.AppUI
 
 
 class MainActivity : ComponentActivity() {
-    private lateinit var model : TheModel
+    private lateinit var model : PlantModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //TODO: correct naming of app and all files, namespace, applicationId etc. (do not use TheUi, TheModel, TheApp etc.) - check gradle files!
-        model = TheModel
+        val repo = PlantRepository()
+        repo.loadPlants(this)
+        model = PlantModel(repo)
         model.connectAndSubscribe()
 
         setContent {

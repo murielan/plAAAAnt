@@ -1,13 +1,17 @@
 package fhnw.ws6c.theapp.data
 
-import android.graphics.Bitmap
-import java.util.Date
+import org.json.JSONObject
+import java.sql.Timestamp
 
-data class Plant(
-    val id: Int = 0,
-    val name: String = "",
-    val place: String = "",
-    val birthday: Date,
-    val picture: Bitmap,
-    val sensorId: Int
-)
+class Plant(json: JSONObject) {
+    val id = json.getInt("id")
+    val name = json.getString("name")
+    val place = json.getString("place")
+    val birthday = Timestamp(json.getLong("birthday"))
+    val picture = json.getString("picture") //TODO: implement picture
+    val sensorId = json.getInt("sensorId")
+    val measurements = mutableListOf <Measurement>()
+
+    constructor(jsonString: String) : this(JSONObject(jsonString))
+}
+

@@ -9,10 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fhnw.ws6c.theapp.model.TheModel
+import fhnw.ws6c.theapp.model.PlantModel
 
 @Composable
-fun HomeScreen(model: TheModel) {
+fun HomeScreen(model: PlantModel) {
     with(model){
         Column(
             modifier         = Modifier
@@ -34,6 +34,12 @@ fun HomeScreen(model: TheModel) {
             if(allMeasurements.isNotEmpty()) {
                 Text(text = "For the sensor ${allMeasurements.last().sensorId} a humidity of " +
                         "${allMeasurements.last().humidity} has been measured at ${allMeasurements.last().time.toString()}")
+            }
+            if(plantList.isNotEmpty()){
+                Text(text = plantList[0].name + ": " + plantList[0].measurements.lastOrNull()?.humidity)
+                Text(text = plantList[1].name + ": " + plantList[1].measurements.lastOrNull()?.humidity)
+                Text(text = plantList[2].name + ": " + plantList[2].measurements.lastOrNull()?.humidity)
+
             }
         }
     }
