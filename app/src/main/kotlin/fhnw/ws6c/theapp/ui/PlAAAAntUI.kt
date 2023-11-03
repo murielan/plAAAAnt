@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import fhnw.ws6c.theapp.model.PlantModel
 import fhnw.ws6c.theapp.model.Screen
+import fhnw.ws6c.theapp.ui.screens.AAAAScreen
 import fhnw.ws6c.theapp.ui.screens.HomeScreen
 
 @Composable
@@ -15,7 +16,7 @@ fun PlAAAAntUI(model: PlantModel) {
                     HomeScreen(model)
                 }
                 // (Screen.Plant == screen) -> { PlantScreen(model)}
-                // (Screen.AAAA == screen) -> { PlantScreen(model)}
+                (Screen.AAAA == screen) -> { AAAAScreen(model)}
             }
         }
     }
