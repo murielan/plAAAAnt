@@ -13,12 +13,13 @@ import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.data.Plant
 import fhnw.ws6c.theapp.data.PlantRepository
 
-class PlantModel(val plantRepo: PlantRepository) {
+class PlantModel(plantRepo: PlantRepository) {
     var title = "PlAAAAnt"
     var boolean by mutableStateOf(true)
     var currentScreen by mutableStateOf(Screen.HOME)
 
     var plantList: List<Plant> = plantRepo.getPlants()
+    var currentPlant by mutableStateOf(plantList[0])
 
     private val mqttBroker = "broker.hivemq.com"
     private val topic = "fhnw/ws6c/plaaaant"

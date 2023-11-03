@@ -1,6 +1,7 @@
 package fhnw.ws6c.theapp.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,12 +26,14 @@ fun NavigationBottomAppBar(model: PlantModel) {
         NavigationBar(
         ) {
             Screen.entries.forEach { screen ->
-                NavigationBarItem(
-                    icon = { Icon(screen.icon, screen.title) },
-                    label = { Text(screen.title) },
-                    selected = currentScreen == screen,
-                    onClick = { currentScreen = screen }
-                )
+                if (screen != Screen.PLANT) {
+                    NavigationBarItem(
+                        icon = { Icon(screen.icon, screen.title) },
+                        label = { Text(screen.title) },
+                        selected = currentScreen == screen,
+                        onClick = { currentScreen = screen }
+                    )
+                }
             }
         }
     }
@@ -45,6 +48,10 @@ fun PlantBox(model: PlantModel, plant: Plant) {
                 .fillMaxWidth(0.49f)
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color.Green)
+                .clickable {
+                    currentPlant = plant
+                    currentScreen = Screen.PLANT
+                }
         ) {
             Column {
                 Text(text = plant.name)
