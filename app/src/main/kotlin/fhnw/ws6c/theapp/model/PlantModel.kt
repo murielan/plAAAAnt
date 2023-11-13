@@ -58,11 +58,16 @@ class PlantModel(plantRepo: PlantRepository) {
             }
 
         for (plant in plantList) {
-            if(plant.sensorId == measurement.sensorId){
+            if (plant.sensorId == measurement.sensorId) {
                 plant.measurements.add(measurement)
+                checkIfWaterNeeded(plant, measurement)
                 break
             }
         }
+    }
+
+    private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement) {
+        plant.needsWater.value = measurement.humidity < plant.minHumidity
     }
 
     private fun getDbMeasurements() {
@@ -78,4 +83,11 @@ class PlantModel(plantRepo: PlantRepository) {
             }
     }
 
+    fun aPlantNeedsWater(): Boolean {
+        for (plant in plantList) {
+            if (plant.needsWater.value)
+                return true
+        }
+        return false
+    }
 }
