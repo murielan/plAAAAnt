@@ -1,5 +1,7 @@
 package fhnw.ws6c.theapp.data
 
+import android.content.Context
+import android.content.Intent
 import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
@@ -7,14 +9,25 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
 
-class MqttConnector (mqttBroker: String,
-                     private val qos: MqttQos = MqttQos.EXACTLY_ONCE){
+class MqttConnector(private val context: Context,
+                    mqttBroker: String,
+                    private val qos: MqttQos = MqttQos.EXACTLY_ONCE){
 
     private val client = Mqtt5Client.builder()
         .serverHost(mqttBroker)
         .serverPort(1883) //TODO change for Sensor Testing
         .identifier(UUID.randomUUID().toString())
         .buildAsync()
+
+    fun startForegroundService() {
+        val intent = Intent(context, MqttService::class.java)
+        context.startService(intent)
+    }
+
+    fun stopForegroundService() {
+        val intent = Intent(context, MqttService::class.java)
+        context.stopService(intent)
+    }
 
     fun connectAndSubscribe(topic:              String,
                             onNewMessage:       (JSONObject) -> Unit,
@@ -55,6 +68,12 @@ class MqttConnector (mqttBroker: String,
         client.disconnectWith()
             .sessionExpiryInterval(0)
             .send()
+    }
+
+    companion object {
+        fun disconnect() {
+            disconnect()
+        }
     }
 }
 
