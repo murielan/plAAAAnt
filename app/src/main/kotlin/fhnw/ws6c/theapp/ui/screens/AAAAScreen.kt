@@ -41,7 +41,7 @@ fun AAAAContent(model: PlantModel, innerPadding: PaddingValues) {
                     .fillMaxSize()
                     .padding(20.dp)
             ) {
-                if (aPlantNeedsWater()) {
+                if (counterPlantsThatNeedWater()>0) {
                     PlantBoxes(model)
                 } else {
                     Column(modifier = Modifier.fillMaxSize(),
