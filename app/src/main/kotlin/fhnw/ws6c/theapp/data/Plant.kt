@@ -4,13 +4,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import fhnw.ws6c.R
 import org.json.JSONObject
-import java.sql.Timestamp
 
 data class Plant(val json: JSONObject) {
     val id = json.getInt("id")
     val name = json.getString("name")
     val place = json.getString("place")
-    val birthday = Timestamp(json.getLong("birthday"))
+    val birthday = json.getLong("birthday")
     val minHumidity = json.getInt("minHumidity")
     val pictureHappy = getPicture(json.getInt("picture"), true)
     val pictureSad= getPicture(json.getInt("picture"), false)

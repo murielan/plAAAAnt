@@ -104,7 +104,7 @@ fun InfoAboutPlant(currentPlant: Plant) {
                 }
                 Column {
                     Text(text = "Bodenfeuchtigkeit: " + measurements.lastOrNull()?.humidity.toString() + "%")
-                    Text(text = "Letze Messung:" + measurements.lastOrNull()?.time)
+                    Text(text = "Gemessen: " + measurements.lastOrNull()?.time)
                 }
             }
         }
