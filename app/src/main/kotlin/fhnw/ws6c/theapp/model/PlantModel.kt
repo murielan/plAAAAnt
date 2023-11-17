@@ -3,7 +3,6 @@ package fhnw.ws6c.theapp.model
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.firebase.Firebase
@@ -19,8 +18,6 @@ class PlantModel(plantRepo: PlantRepository) {
     var boolean by mutableStateOf(true)
     var currentScreen by mutableStateOf(Screen.HOME)
 
-    //val dataStore: DataStore<Preferences> = context.createDataStore(name = "user_preferences")
-
     var plantList: MutableList<Plant> = plantRepo.getPlants()
     var currentPlant by mutableStateOf(plantList[0])
 
@@ -31,14 +28,12 @@ class PlantModel(plantRepo: PlantRepository) {
 
     private var notificationMessage by mutableStateOf("")
 
-    var measurementsReceived by mutableIntStateOf(0)
-
+    // firebase
     val db = Firebase.firestore
 
     fun connectAndSubscribe() {
         mqttConnector.connectAndSubscribe(topic = topic,
             onNewMessage = {
-                measurementsReceived++
                 addMeasurementToPlant(Measurement(it))
             },
             onError = { _, p ->
@@ -84,12 +79,13 @@ class PlantModel(plantRepo: PlantRepository) {
             }
     }
 
-    fun aPlantNeedsWater(): Boolean {
+    fun counterPlantsThatNeedWater(): Int {
+        var count = 0
         for (plant in plantList) {
             if (plant.needsWater.value)
-                return true
+                count++
         }
-        return false
+        return count
     }
 
 }
