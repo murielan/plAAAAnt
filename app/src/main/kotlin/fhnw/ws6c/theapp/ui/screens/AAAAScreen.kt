@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fhnw.ws6c.theapp.model.PlantModel
@@ -42,7 +44,13 @@ fun AAAAContent(model: PlantModel, innerPadding: PaddingValues) {
                 if (aPlantNeedsWater()) {
                     PlantBoxes(model)
                 } else {
-
+                    Column(modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("No plant is screaming")
+                        Text("You have a green thumb!")
+                    }
                 }
 
             }

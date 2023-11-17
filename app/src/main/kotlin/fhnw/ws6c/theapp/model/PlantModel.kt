@@ -13,12 +13,15 @@ import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.data.Plant
 import fhnw.ws6c.theapp.data.PlantRepository
 
+
 class PlantModel(plantRepo: PlantRepository) {
     var title = "PlAAAAnt"
     var boolean by mutableStateOf(true)
     var currentScreen by mutableStateOf(Screen.HOME)
 
-    var plantList: List<Plant> = plantRepo.getPlants()
+    //val dataStore: DataStore<Preferences> = context.createDataStore(name = "user_preferences")
+
+    var plantList: MutableList<Plant> = plantRepo.getPlants()
     var currentPlant by mutableStateOf(plantList[0])
 
     private val mqttBroker = "broker.hivemq.com"
@@ -29,7 +32,6 @@ class PlantModel(plantRepo: PlantRepository) {
     private var notificationMessage by mutableStateOf("")
 
     var measurementsReceived by mutableIntStateOf(0)
-    val allMeasurements = mutableListOf<Measurement>()
 
     val db = Firebase.firestore
 
@@ -37,7 +39,6 @@ class PlantModel(plantRepo: PlantRepository) {
         mqttConnector.connectAndSubscribe(topic = topic,
             onNewMessage = {
                 measurementsReceived++
-                allMeasurements.add(Measurement(it))
                 addMeasurementToPlant(Measurement(it))
             },
             onError = { _, p ->
@@ -48,18 +49,18 @@ class PlantModel(plantRepo: PlantRepository) {
 
     private fun addMeasurementToPlant(measurement: Measurement) {
         // Add a new document with a generated ID
-        db.collection("measurements")
+/*        db.collection("measurements")
             .add(measurement)
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding measurement", e)
-            }
+            }*/
 
         for (plant in plantList) {
             if (plant.sensorId == measurement.sensorId) {
-                plant.measurements.add(measurement)
+                plant.measurements.apply { add(measurement) }
                 checkIfWaterNeeded(plant, measurement)
                 break
             }
@@ -90,4 +91,5 @@ class PlantModel(plantRepo: PlantRepository) {
         }
         return false
     }
+
 }

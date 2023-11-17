@@ -28,7 +28,7 @@ import fhnw.ws6c.theapp.model.Screen
 fun PlantScreen(model: PlantModel) {
     with(model) {
         Scaffold(
-            topBar = { PlantAppBar(model) },
+            topBar = { NavigationTopAppBar(model) },
             content = { innerPadding -> SinglePlantContent(model, innerPadding) },
             bottomBar = { NavigationBottomAppBar(model) }
         )

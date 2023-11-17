@@ -109,7 +109,7 @@ fun NavigationBottomAppBar(model: PlantModel) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
+                    .height(1.dp)
                     .background(Color.Gray)
             )
         }
@@ -143,5 +143,6 @@ fun PlantBox(model: PlantModel, plant: Plant) {
         }
     }
 }
+
 
 

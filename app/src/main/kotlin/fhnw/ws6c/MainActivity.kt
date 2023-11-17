@@ -1,5 +1,7 @@
 package fhnw.ws6c
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +21,24 @@ class MainActivity : ComponentActivity() {
         repo.loadPlants(this)
         model = PlantModel(repo)
         model.connectAndSubscribe()
+
+        val notificationChannel = NotificationChannel(
+            "plaaaant_notification",
+            "PlAAAAnt",
+            NotificationManager.IMPORTANCE_HIGH
+        )
+
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(notificationChannel)
+
+/*       val notificationPermissionState =
+            rememberPermissionState(
+                permission = Manifest.permission.POST_NOTIFICATIONS
+            )
+
+        val plantNotificationService = remember {
+            PlantNotificationService(this)
+        }*/
 
         setContent {
             PlAAAAntUI(model)

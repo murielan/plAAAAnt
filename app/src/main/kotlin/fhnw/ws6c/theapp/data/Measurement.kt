@@ -4,9 +4,9 @@ import org.json.JSONObject
 import java.sql.Timestamp
 
 data class Measurement(
-    val sensorId: Int = 0,
-    val humidity: Int = 0,
-    val time: Timestamp
+    var sensorId: Int = 0,
+    var humidity: Int = 0,
+    var time: Timestamp
 ) {
     // { "sensorId": 4, "humidity": 652, "time": 1697804398896}
     constructor(json: JSONObject) : this(

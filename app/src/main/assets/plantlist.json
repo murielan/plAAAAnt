@@ -4,7 +4,7 @@
     "name": "Fridolin",
     "place": "Wohnzimmer",
     "birthday": "1697804398896",
-    "minHumidity" : 150,
+    "minHumidity" : 20,
     "picture": "",
     "sensorId": 1
   },
@@ -13,7 +13,7 @@
     "name": "Blattito",
     "place": "Schlafzimmer",
     "birthday": "1697804398896",
-    "minHumidity" : 150,
+    "minHumidity" : 20,
     "picture": "",
     "sensorId": 2
   },
@@ -22,7 +22,7 @@
     "name": "Topfi",
     "place": "Schlafzimmer",
     "birthday": "1697804398896",
-    "minHumidity" : 50,
+    "minHumidity" : 5,
     "picture": "",
     "sensorId": 3
   }

@@ -6,7 +6,7 @@ import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
 class PlantRepository {
-    lateinit var data: List<Plant>
+    lateinit var data: MutableList<Plant>
 
     fun loadPlants(context: Context) {
         val plants = mutableListOf<Plant>()
@@ -20,7 +20,7 @@ class PlantRepository {
        data = plants
     }
 
-    fun getPlants(): List<Plant> {
+    fun getPlants(): MutableList<Plant> {
         return data
     }
 
