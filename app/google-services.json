@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "46246803406",
+    "project_id": "ws6c-plaaaant",
+    "storage_bucket": "ws6c-plaaaant.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46246803406:android:331cb258458ed23cba9d9f",
+        "android_client_info": {
+          "package_name": "fhnw.ws6capp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9EQtMBQ7UD7FClkha1y9IpHqY02wcYMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
