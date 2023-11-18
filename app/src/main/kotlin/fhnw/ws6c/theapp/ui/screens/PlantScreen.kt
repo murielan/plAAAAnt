@@ -89,22 +89,29 @@ fun InfoAboutPlant(currentPlant: Plant) {
     with(currentPlant) {
         Box(modifier = Modifier.padding(0.dp, 20.dp)) {
             Row {
-                Column (Modifier.padding(0.dp, 0.dp, 20.dp, 0.dp)){
+                Column(Modifier.padding(0.dp, 0.dp, 20.dp, 0.dp)) {
                     Icon(Icons.Filled.Place, contentDescription = "Place")
                 }
                 Column {
-                    Text(text = place)
+                    Text(
+                        text = place.ifEmpty { "unbekannt" }
+                    )
                 }
             }
         }
         Box {
             Row {
-                Column (Modifier.padding(0.dp, 0.dp, 20.dp, 0.dp)){
+                Column(Modifier.padding(0.dp, 0.dp, 20.dp, 0.dp)) {
                     Icon(Icons.Outlined.MonitorHeart, contentDescription = "Alive")
                 }
                 Column {
-                    Text(text = "Bodenfeuchtigkeit: " + measurements.lastOrNull()?.humidity.toString() + "%")
-                    Text(text = "Gemessen: " + measurements.lastOrNull()?.time)
+                    val lastMeasurement = measurements.lastOrNull()
+                    if (lastMeasurement != null) {
+                        Text(text = "Bodenfeuchtigkeit: ${lastMeasurement.humidity} %")
+                        Text(text = "Gemessen am: ${lastMeasurement.time}")
+                    } else {
+                        Text(text = "Bodenfeuchtigkeit: unbekannt")
+                    }
                 }
             }
         }
@@ -148,6 +155,3 @@ fun SadPlant(currentPlant: Plant) {
         )
     }
 }
-
-
-

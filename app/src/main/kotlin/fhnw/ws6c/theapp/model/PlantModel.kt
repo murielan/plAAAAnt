@@ -3,7 +3,6 @@ package fhnw.ws6c.theapp.model
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
@@ -13,28 +12,42 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObject
 import fhnw.ws6c.MainActivity
 import fhnw.ws6c.R
+import fhnw.ws6c.theapp.data.FirebaseService
 import fhnw.ws6c.theapp.data.Measurement
 import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.data.Plant
 import fhnw.ws6c.theapp.data.defaultPlant
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 
-class PlantModel(private val context: Context, private val mqttConnector: MqttConnector) {
+class PlantModel(
+    private val context: Context,
+    private val mqttConnector: MqttConnector,
+    private val firebaseService: FirebaseService,
+) {
+
+    private val backgroundJob = SupervisorJob()
+    private val modelScope = CoroutineScope(backgroundJob + Dispatchers.IO)
+
+    private val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val channelId = "fhnw.ws6c.theapp.notifications"
+    lateinit var pendingIntent : PendingIntent
 
     var currentScreen by mutableStateOf(Screen.HOME)
     var plantList by mutableStateOf<List<Plant>>(emptyList())
     var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else defaultPlant())
 
-    private var notificationMessage by mutableStateOf("")
+    private var notificationMessage by mutableStateOf("")  //TODO: wird noch nirgends angezeigt
 
-    // firebase
-    val db = Firebase.firestore
-    var plantRef = db.collection("plants")
+    init {
+        setupNotification()
+    }
 
     fun connectAndSubscribe() {
         mqttConnector.connectAndSubscribe(
@@ -44,37 +57,25 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
             onError = { _, p ->
                 notificationMessage = p
             })
-        getDbMeasurements()
     }
 
     fun getPlants() {
-        plantRef.get()
-            .addOnSuccessListener { result ->
-                run {
-                    val newplants = mutableListOf<Plant>()
-                    for (document in result) {
-                        println("${document.id} => ${document.data}")
-                        val plant = document.toObject<Plant>()
-                        newplants.add(plant)
-                    }
-                    plantList = newplants
-                }
+        val job = modelScope.launch {
+            firebaseService.getPlants {
+                plantList = it
             }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error fetching plants: ${exception.message}", exception)
-            }
+        }
+        //get FirebaseMeasurements after plants are loaded
+        job.invokeOnCompletion { getDbMeasurements() }
     }
 
-    private fun addMeasurementToPlant(measurement: Measurement) {
-        db.collection("measurements")
-            .add(measurement)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding measurement", e)
-            }
 
+    private fun addMeasurementToPlant(measurement: Measurement) {
+        //persist in firebase
+        modelScope.launch {
+            firebaseService.addMeasurementToPlant(measurement = measurement)
+        }
+        //add to plant in memory
         for (plant in plantList) {
             if (plant.sensorId == measurement.sensorId) {
                 plant.measurements.apply { add(measurement) }
@@ -94,30 +95,26 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
         }
     }
 
+    // get Measurements from Firebase and add to each known plant
     private fun getDbMeasurements() {
-        db.collection("measurements")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(TAG, "${document.id} => ${document.data}")
+        modelScope.launch {
+            firebaseService.getDbMeasurements {
+                for (measurement in it){
+                    for (plant in plantList) {
+                        if (plant.sensorId == measurement.sensorId) {
+                            plant.measurements.apply { add(measurement) }
+                            // checkIfWaterNeeded(plant, measurement) - if app is running and gets all measurements from mqtt, this is not needed here (it fails because it tries to handle over 1600 measurements)
+                            break
+                        }
+                    }
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-    }
-
-    fun counterPlantsThatNeedWater(): Int {
-        var count = 0
-        for (plant in plantList) {
-            if (plant.needsWater.value)
-                count++
         }
-        return count
     }
 
-    private fun showNotification(plantName: String) {
-        val channelId = "fhnw.ws6c.theapp.notifications"
+    fun counterPlantsThatNeedWater(): Int = plantList.count { it.needsWater.value }
+
+    private fun setupNotification() {
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
             .build()
@@ -142,13 +139,15 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
 
         val intent = Intent(context, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(
+        pendingIntent = PendingIntent.getActivity(
             context,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         )
+    }
 
+    private fun showNotification(plantName: String) {
         // Build the notification
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("AAAA!!")
