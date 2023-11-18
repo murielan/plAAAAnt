@@ -43,12 +43,14 @@ fun AAAAContent(model: PlantModel, innerPadding: PaddingValues) {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(plantList) { item ->
-                    if (counterPlantsThatNeedWater() > 0) {
+                if (counterPlantsThatNeedWater() > 0) {
+                    items(plantList) { item ->
                         if(item.needsWater.value){
                             PlantBox(model = model, plant = item)
                         }
-                    } else {
+                    }
+                }else{
+                    item {
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,

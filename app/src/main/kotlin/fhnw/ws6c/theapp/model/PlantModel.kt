@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
@@ -20,15 +19,14 @@ import fhnw.ws6c.R
 import fhnw.ws6c.theapp.data.Measurement
 import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.data.Plant
+import fhnw.ws6c.theapp.data.defaultPlant
 
 
 class PlantModel(private val context: Context, private val mqttConnector: MqttConnector) {
-    var title = "PlAAAAnt"
-    var boolean by mutableStateOf(true)
-    var currentScreen by mutableStateOf(Screen.HOME)
 
-    var plantList = mutableStateListOf<Plant>() // = plantRepo.getPlants()
-    var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else Plant.defaultPlant)
+    var currentScreen by mutableStateOf(Screen.HOME)
+    var plantList by mutableStateOf<List<Plant>>(emptyList())
+    var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else defaultPlant())
 
     private var notificationMessage by mutableStateOf("")
 
@@ -51,12 +49,13 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
         plantRef.get()
             .addOnSuccessListener { result ->
                 run {
-                    plantList = mutableStateListOf()
+                    val newplants = mutableListOf<Plant>()
                     for (document in result) {
                         println("${document.id} => ${document.data}")
                         val plant = document.toObject<Plant>()
-                        plantList.add(plant)
+                        newplants.add(plant)
                     }
+                    plantList = newplants
                 }
             }
             .addOnFailureListener { exception ->
