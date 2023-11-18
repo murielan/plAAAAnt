@@ -210,14 +210,14 @@ fun PlantImage(plant: Plant) {
     with(plant) {
         if (needsWater.value) {
             Image(
-                painter = painterResource(pictureSad),
+                painter = painterResource(getPictureDrawable()),
                 contentDescription = "Sad Plant",
                 modifier = Modifier
                     .size(100.dp)
             )
         } else {
             Image(
-                painter = painterResource(pictureHappy),
+                painter = painterResource(getPictureDrawable()),
                 contentDescription = "Happy Plant",
                 modifier = Modifier
                     .size(100.dp)

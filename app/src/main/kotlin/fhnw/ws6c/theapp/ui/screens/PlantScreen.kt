@@ -121,7 +121,7 @@ fun HappyPlant(currentPlant: Plant) {
                 .fillMaxWidth()
         )
         Image(
-            painter = painterResource(pictureHappy),
+            painter = painterResource(getPictureDrawable()),
             contentDescription = "Plant Image",
             modifier = Modifier
                 .size(200.dp)
@@ -140,7 +140,7 @@ fun SadPlant(currentPlant: Plant) {
                 .fillMaxWidth()
         )
         Image(
-            painter = painterResource(pictureSad),
+            painter = painterResource(getPictureDrawable()),
             contentDescription = "Plant Image",
             modifier = Modifier
                 .size(200.dp)

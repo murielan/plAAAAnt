@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
@@ -19,7 +20,6 @@ import fhnw.ws6c.R
 import fhnw.ws6c.theapp.data.Measurement
 import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.data.Plant
-import fhnw.ws6c.theapp.data.getPicture
 
 
 class PlantModel(private val context: Context, private val mqttConnector: MqttConnector) {
@@ -27,7 +27,7 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
     var boolean by mutableStateOf(true)
     var currentScreen by mutableStateOf(Screen.HOME)
 
-    var plantList = mutableListOf<Plant>() // = plantRepo.getPlants()
+    var plantList = mutableStateListOf<Plant>() // = plantRepo.getPlants()
     var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else Plant.defaultPlant)
 
     private var notificationMessage by mutableStateOf("")
@@ -51,11 +51,10 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
         plantRef.get()
             .addOnSuccessListener { result ->
                 run {
-                    plantList = mutableListOf()
+                    plantList = mutableStateListOf()
                     for (document in result) {
                         println("${document.id} => ${document.data}")
                         val plant = document.toObject<Plant>()
-                        plant.pictureHappy = getPicture(plant.pictureHappy, true)
                         plantList.add(plant)
                     }
                 }
