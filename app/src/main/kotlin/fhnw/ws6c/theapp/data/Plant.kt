@@ -35,26 +35,7 @@ data class Plant(val json: JSONObject) {
         )
     )
 
-    companion object {
-        // Create a default plant instance with default values
-        val defaultPlant = Plant(
-            JSONObject(
-                """
-            {
-                "id": 0,
-                "name": "default",
-                "place": "default",
-                "birthday": "1697804398896",
-                "minHumidity" : 20,
-                "picture": 0,
-                "sensorId": 0
-              }
-        """
-            )
-        )
-    }
-
-    public fun getPictureDrawable(): Int {
+    fun getPictureDrawable(): Int {
         if (picture == 1 && !needsWater.value) {
             return R.drawable.aloe_happy
         } else if (picture == 1 && needsWater.value) {
@@ -72,3 +53,19 @@ data class Plant(val json: JSONObject) {
     }
 }
 
+// Create a default plant instance with default values
+fun defaultPlant() = Plant(
+    JSONObject(
+        """
+            {
+                "id": 0,
+                "name": "default",
+                "place": "default",
+                "birthday": "1697804398896",
+                "minHumidity" : 20,
+                "picture": 0,
+                "sensorId": 0
+              }
+        """
+    )
+)
