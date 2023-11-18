@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -116,8 +118,16 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
 
     private fun showNotification(plantName: String) {
         val channelId = "fhnw.ws6c.theapp.notifications"
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .build()
+
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val sound = Uri.parse("android.resource://" + context.packageName + "/" + R.raw.scream)
+
+        Log.d("notification", "use this sound: $sound")
 
         // Create a notification channel (required for Android Oreo and above)
         val channel = NotificationChannel(
@@ -125,6 +135,9 @@ class PlantModel(private val context: Context, private val mqttConnector: MqttCo
             "PlAAAAnt Notifications",
             NotificationManager.IMPORTANCE_HIGH
         )
+
+        channel.setSound(Uri.parse("android.resource://" + context.packageName + "/" + R.raw.scream), audioAttributes)
+
         notificationManager.createNotificationChannel(channel)
 
         val intent = Intent(context, MainActivity::class.java)

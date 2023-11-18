@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class Screen(val title: String, val icon: ImageVector) {
-    HOME("Home", Icons.Filled.Home),
+    HOME("PlAAAAnts", Icons.Filled.Home),
     PLANT("", Icons.Filled.Home),
     AAAA("AAAA!!", Icons.Filled.Warning)
 }
