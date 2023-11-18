@@ -13,6 +13,8 @@ class MqttConnector(private val context: Context,
                     mqttBroker: String,
                     private val qos: MqttQos = MqttQos.EXACTLY_ONCE){
 
+    private val topic = "fhnw/ws6c/plaaaant"
+
     private val client = Mqtt5Client.builder()
         .serverHost(mqttBroker)
         .serverPort(1883) //TODO change for Sensor Testing
@@ -29,8 +31,7 @@ class MqttConnector(private val context: Context,
         context.stopService(intent)
     }
 
-    fun connectAndSubscribe(topic:              String,
-                            onNewMessage:       (JSONObject) -> Unit,
+    fun connectAndSubscribe(onNewMessage:       (JSONObject) -> Unit,
                             onError:            (Exception, String) -> Unit = {e, _ -> e.printStackTrace()},
                             onConnectionFailed: () -> Unit = {}) {
         client.connectWith()

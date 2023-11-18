@@ -2,7 +2,6 @@ package fhnw.ws6c.theapp.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,7 +17,7 @@ import fhnw.ws6c.theapp.model.PlantModel
 fun HomeScreen(model: PlantModel) {
     with(model) {
         Scaffold(
-            topBar = { NavigationTopAppBar(model)},
+            topBar = { NavigationTopAppBar(model) },
             content = { innerPadding -> HomeContent(model, innerPadding) },
             bottomBar = { NavigationBottomAppBar(model) }
         )
@@ -35,19 +34,13 @@ fun HomeContent(model: PlantModel, innerPadding: PaddingValues) {
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp)
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                maxItemsInEachRow = 2
             ) {
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                    maxItemsInEachRow = 2
-                ) {
-                    for (plant in plantList) {
-                        PlantBox(model, plant)
-                    }
+                for (plant in plantList) {
+                    PlantBox(model, plant)
                 }
             }
         }

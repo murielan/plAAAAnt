@@ -13,34 +13,31 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import fhnw.ws6c.MainActivity
 import fhnw.ws6c.R
 import fhnw.ws6c.theapp.data.Measurement
 import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.data.Plant
-import fhnw.ws6c.theapp.data.PlantRepository
+import fhnw.ws6c.theapp.data.getPicture
 
 
-class PlantModel(private val context: Context, plantRepo: PlantRepository) {
+class PlantModel(private val context: Context, private val mqttConnector: MqttConnector) {
     var title = "PlAAAAnt"
     var boolean by mutableStateOf(true)
     var currentScreen by mutableStateOf(Screen.HOME)
 
-    var plantList: MutableList<Plant> = plantRepo.getPlants()
-    var currentPlant by mutableStateOf(plantList[0])
-
-    private val mqttBroker = "broker.hivemq.com"
-    private val topic = "fhnw/ws6c/plaaaant"
-
-    private val mqttConnector by lazy { MqttConnector(context, mqttBroker) }
+    var plantList = mutableListOf<Plant>() // = plantRepo.getPlants()
+    var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else Plant.defaultPlant)
 
     private var notificationMessage by mutableStateOf("")
 
     // firebase
     val db = Firebase.firestore
+    var plantRef = db.collection("plants")
 
     fun connectAndSubscribe() {
-        mqttConnector.connectAndSubscribe(topic = topic,
+        mqttConnector.connectAndSubscribe(
             onNewMessage = {
                 addMeasurementToPlant(Measurement(it))
             },
@@ -50,16 +47,33 @@ class PlantModel(private val context: Context, plantRepo: PlantRepository) {
         getDbMeasurements()
     }
 
-    private fun addMeasurementToPlant(measurement: Measurement) {
-        // Add a new document with a generated ID
-        /*        db.collection("measurements")
-                    .add(measurement)
-                    .addOnSuccessListener { documentReference ->
-                        Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+    fun getPlants() {
+        plantRef.get()
+            .addOnSuccessListener { result ->
+                run {
+                    plantList = mutableListOf()
+                    for (document in result) {
+                        println("${document.id} => ${document.data}")
+                        val plant = document.toObject<Plant>()
+                        plant.pictureHappy = getPicture(plant.pictureHappy, true)
+                        plantList.add(plant)
                     }
-                    .addOnFailureListener { e ->
-                        Log.w(TAG, "Error adding measurement", e)
-                    }*/
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error fetching plants: ${exception.message}", exception)
+            }
+    }
+
+    private fun addMeasurementToPlant(measurement: Measurement) {
+        db.collection("measurements")
+            .add(measurement)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding measurement", e)
+            }
 
         for (plant in plantList) {
             if (plant.sensorId == measurement.sensorId) {
@@ -72,10 +86,10 @@ class PlantModel(private val context: Context, plantRepo: PlantRepository) {
 
     private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement) {
         // notification if needsWater changes
-        if(!plant.needsWater.value && measurement.humidity < plant.minHumidity){
+        if (!plant.needsWater.value && measurement.humidity < plant.minHumidity) {
             showNotification(plant.name)
             plant.needsWater.value = true
-        } else if(plant.needsWater.value && measurement.humidity > plant.minHumidity) {
+        } else if (plant.needsWater.value && measurement.humidity > plant.minHumidity) {
             plant.needsWater.value = false
         }
     }
@@ -101,6 +115,7 @@ class PlantModel(private val context: Context, plantRepo: PlantRepository) {
         }
         return count
     }
+
     private fun showNotification(plantName: String) {
         val channelId = "fhnw.ws6c.theapp.notifications"
         val notificationManager =

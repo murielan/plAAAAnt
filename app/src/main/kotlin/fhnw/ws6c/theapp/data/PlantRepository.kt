@@ -6,7 +6,7 @@ import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
 class PlantRepository {
-    lateinit var data: MutableList<Plant>
+    /*lateinit var data: MutableList<Plant>
 
     fun loadPlants(context: Context) {
         val plants = mutableListOf<Plant>()
@@ -32,6 +32,6 @@ class PlantRepository {
         inputStream.close()
 
         return String(buffer, StandardCharsets.UTF_8)
-    }
+    }*/
 
 }
