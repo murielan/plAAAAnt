@@ -3,6 +3,7 @@ package fhnw.ws6c.theapp.data
 import android.content.ContentValues
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 
@@ -33,6 +34,7 @@ class FirebaseService {
 
     fun getDbMeasurements(onSuccess: (measurements: List<Measurement>)->Unit) {
         db.collection("measurements")
+            .orderBy("time", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { result ->
                 newMeasurements = mutableListOf()

@@ -41,6 +41,7 @@ class PlantModel(
 
     var currentScreen by mutableStateOf(Screen.HOME)
     var plantList by mutableStateOf<List<Plant>>(emptyList())
+    var plantsThatNeedWaterList by mutableStateOf<List<Plant>>(emptyList())
     var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else defaultPlant())
 
     private var notificationMessage by mutableStateOf("")  //TODO: wird noch nirgends angezeigt
@@ -79,19 +80,21 @@ class PlantModel(
         for (plant in plantList) {
             if (plant.sensorId == measurement.sensorId) {
                 plant.measurements.apply { add(measurement) }
-                checkIfWaterNeeded(plant, measurement)
+                checkIfWaterNeeded(plant, measurement, true)
                 break
             }
         }
     }
 
-    private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement) {
+    private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement, notify: Boolean) {
         // notification if needsWater changes
         if (!plant.needsWater.value && measurement.humidity < plant.minHumidity) {
-            showNotification(plant.name)
+            if(notify) showNotification(plant.name)
             plant.needsWater.value = true
+            plantsThatNeedWaterList += plant
         } else if (plant.needsWater.value && measurement.humidity > plant.minHumidity) {
             plant.needsWater.value = false
+            plantsThatNeedWaterList -= plant
         }
     }
 
@@ -110,7 +113,7 @@ class PlantModel(
                 // check with last Measurement if water is needed
                 for(plant in plantList) {
                     if (plant.measurements.lastOrNull() != null) {
-                        checkIfWaterNeeded(plant, plant.measurements.last())
+                        checkIfWaterNeeded(plant, plant.measurements.last(), false)
                     }
                 }
             }
