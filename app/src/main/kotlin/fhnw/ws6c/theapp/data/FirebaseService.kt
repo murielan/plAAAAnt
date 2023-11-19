@@ -51,13 +51,13 @@ class FirebaseService {
     // if MQTT client receives measurement, add it to firebase and refresh measurements
     fun addMeasurementToPlant(measurement: Measurement) {
         db.collection("measurements")
-            .add(measurement)
+            .add(measurement.asHashMap())
             .addOnSuccessListener { documentReference ->
                 Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
             }
             .addOnFailureListener { e ->
                 Log.w(ContentValues.TAG, "Error adding measurement", e)
-                //TODO: inform user ?
+                // TODO: inform user ?
             }
     }
 }
