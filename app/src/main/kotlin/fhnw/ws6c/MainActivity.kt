@@ -3,6 +3,7 @@ package fhnw.ws6c
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import fhnw.ws6c.theapp.data.FirebaseService
 import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.model.PlantModel
 import fhnw.ws6c.theapp.ui.PlAAAAntUI
@@ -11,6 +12,7 @@ import fhnw.ws6c.theapp.ui.PlAAAAntUI
 class MainActivity : ComponentActivity() {
     private lateinit var model : PlantModel
     private lateinit var mqttConnector: MqttConnector
+    private lateinit var firebaseService: FirebaseService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,8 +22,9 @@ class MainActivity : ComponentActivity() {
         mqttConnector = MqttConnector(this, "broker.hivemq.com")
         mqttConnector.startForegroundService()
 
-        // repo.loadPlants(this)
-        model = PlantModel(this, mqttConnector)
+        firebaseService = FirebaseService()
+
+        model = PlantModel(this, mqttConnector, firebaseService)
         model.getPlants()
         model.connectAndSubscribe()
 

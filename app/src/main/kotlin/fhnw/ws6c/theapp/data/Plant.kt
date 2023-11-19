@@ -24,13 +24,13 @@ data class Plant(val json: JSONObject) {
     constructor() : this(
         JSONObject(
             """{
-                |"id" : ${Random.nextInt()},
-                |"name" : "",
-                |"place" : "",
-                |"birthday" : 0,
-                |"minHumidity" : 0,
-                |"picture" : 3,
-                |"sensorId" : 0
+                "id" : ${Random.nextInt()},
+                "name" : "",
+                "place" : "",
+                "birthday" : 0,
+                "minHumidity" : 0,
+                "picture" : 3,
+                "sensorId" : 0
             }""".trimMargin()
         )
     )
