@@ -74,7 +74,7 @@ fun AllGood() {
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(R.drawable.plant_happy),
+            painter = painterResource(R.drawable.aloe_happy),
             contentDescription = "Sad Plant",
             modifier = Modifier
                 .size(120.dp)
