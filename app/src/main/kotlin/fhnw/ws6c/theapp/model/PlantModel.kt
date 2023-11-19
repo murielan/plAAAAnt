@@ -103,9 +103,14 @@ class PlantModel(
                     for (plant in plantList) {
                         if (plant.sensorId == measurement.sensorId) {
                             plant.measurements.apply { add(measurement) }
-                            // checkIfWaterNeeded(plant, measurement) - if app is running and gets all measurements from mqtt, this is not needed here (it fails because it tries to handle over 1600 measurements)
                             break
                         }
+                    }
+                }
+                // check with last Measurement if water is needed
+                for(plant in plantList) {
+                    if (plant.measurements.lastOrNull() != null) {
+                        checkIfWaterNeeded(plant, plant.measurements.last())
                     }
                 }
             }
