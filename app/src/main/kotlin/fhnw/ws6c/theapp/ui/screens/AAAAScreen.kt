@@ -1,11 +1,13 @@
 package fhnw.ws6c.theapp.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -14,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import fhnw.ws6c.R
 import fhnw.ws6c.theapp.model.PlantModel
 
 @Composable
@@ -69,7 +73,13 @@ fun AllGood() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Deinen PlAAAAnts geht es gut")
-        Text("Du hast einen grünen Daumen!")
+        Image(
+            painter = painterResource(R.drawable.plant_happy),
+            contentDescription = "Sad Plant",
+            modifier = Modifier
+                .size(120.dp)
+                .padding(0.dp, 20.dp)
+        )
+        Text("Deinen PlAAAAnts geht es super!")
     }
 }
