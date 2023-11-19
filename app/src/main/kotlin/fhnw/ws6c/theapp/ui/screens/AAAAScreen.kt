@@ -37,31 +37,39 @@ fun AAAAContent(model: PlantModel, innerPadding: PaddingValues) {
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                if (counterPlantsThatNeedWater() > 0) {
-                    items(plantList) { item ->
-                        if(item.needsWater.value){
-                            PlantBox(model = model, plant = item)
-                        }
-                    }
-                }else{
-                    item {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text("No plant is screaming")
-                            Text("You have a green thumb!")
-                        }
-                    }
-                }
+            if (counterPlantsThatNeedWater() > 0) {
+                AAAAPlants(model)
+            } else {
+                AllGood()
             }
         }
+    }
+}
+
+@Composable
+fun AAAAPlants(model: PlantModel) {
+    with(model) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(plantsThatNeedWaterList) { item ->
+                PlantBox(model = model, plant = item)
+            }
+        }
+    }
+}
+
+@Composable
+fun AllGood() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Deinen PlAAAAnts geht es gut")
+        Text("Du hast einen grünen Daumen!")
     }
 }

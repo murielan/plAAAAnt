@@ -133,7 +133,7 @@ fun NavigationBottomAppBar(model: PlantModel) {
                                 unselectedIconColor = MaterialTheme.colorScheme.onSurface,
                                 selectedTextColor = MaterialTheme.colorScheme.primary,
                                 unselectedTextColor = MaterialTheme.colorScheme.onSurface,
-                                indicatorColor = Color.White
+                                indicatorColor = MaterialTheme.colorScheme.background
                             ),
                         )
                     }
