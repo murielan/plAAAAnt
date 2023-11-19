@@ -17,7 +17,7 @@
         <activity
             android:name="fhnw.ws6c.MainActivity"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/EmobaTheme.NoActionBar"
+            android:theme="@style/Theme.SplashScreen.MySplash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

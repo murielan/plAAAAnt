@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.SplashScreen.MySplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#E0F8EE</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/load_img</item>
+        <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
+    </style>
+</resources>

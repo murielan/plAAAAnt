@@ -3,6 +3,7 @@ package fhnw.ws6c
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import fhnw.ws6c.theapp.data.FirebaseService
 import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.model.PlantModel
@@ -18,6 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         //TODO: correct naming of app and all files, namespace, applicationId etc. (do not use TheUi, TheModel, TheApp etc.) - check gradle files!
+        installSplashScreen()
 
         mqttConnector = MqttConnector(this, "broker.hivemq.com")
         mqttConnector.startForegroundService()
