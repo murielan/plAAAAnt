@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         // anything else?
-        // mqttConnector.stopForegroundService()
+        mqttConnector.stopForegroundService()
         print("stopped")
     }
 }

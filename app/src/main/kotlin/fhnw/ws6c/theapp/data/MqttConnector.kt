@@ -17,7 +17,7 @@ class MqttConnector(private val context: Context,
 
     private val client = Mqtt5Client.builder()
         .serverHost(mqttBroker)
-        .serverPort(1883) //TODO change for Sensor Testing
+        //.serverPort(1884) //TODO change for Sensor Testing 1883
         .identifier(UUID.randomUUID().toString())
         .buildAsync()
 
