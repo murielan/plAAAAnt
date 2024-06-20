@@ -1,8 +1,41 @@
-== ws6C - Mobile Experience Projekt
+== ws6C FS23 - Mobile Experience Project
 
-=== Bearbeitet von
+## Overview
+THe Android app "PlAAAAnt" is designed to get screamed at (get notifications), when one of your plants is running low on water. Originally developed collaboratively, I will continue its development independently.
 
-* Henrique Dias Ferreira
-* Muriel Andermatt
+## Features
+- Feature 1: Overview of your plants and their wellbeing
+- Feature 2: Get notifications on low humidity
+- Feature 3: Add, edit or delete plants
+- Feature 4: Usage of an external sensor to measure the humidity
 
+## Screenshots
+![Screenshot 1](path/to/screenshot1.png)
+![Screenshot 2](path/to/screenshot2.png)
 
+## Installation
+To install and run the app on your local machine, follow these steps:
+
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/yourusername/your-repo-name.git
+    ```
+
+2. **Open the project** in Android Studio.
+
+3. **Build and run** the project on an emulator or a physical device.
+
+## Usage
+Sensor instructions here
+
+## Contributing
+The initial development was a team effort, but I am now the sole maintainer of this project.
+
+## Licence
+
+## Acknowledgments
+- Michael Job - Contributions to firebase dependencies.
+- Henrique Dias Ferreira - Contributions to .
+
+## Contact
+For any questions or suggestions, please contact me at [your-email@example.com].
