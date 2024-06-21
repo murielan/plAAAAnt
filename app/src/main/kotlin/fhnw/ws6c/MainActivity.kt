@@ -4,10 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import fhnw.ws6c.theapp.data.FirebaseService
 import fhnw.ws6c.theapp.data.MqttConnector
 import fhnw.ws6c.theapp.model.PlantModel
 import fhnw.ws6c.theapp.ui.PlAAAAntUI
+import fhnw.ws6c.theapp.model.AuthModel
+import fhnw.ws6c.theapp.model.Screen
 
 
 class MainActivity : ComponentActivity() {
@@ -30,8 +33,19 @@ class MainActivity : ComponentActivity() {
         model.getPlants()
         model.connectAndSubscribe()
 
+        val sharedPref = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
+        if (isLoggedIn) {
+            model.currentScreen = Screen.HOME
+        } else {
+            model.currentScreen = Screen.SIGNUP
+        }
+
         setContent {
-            PlAAAAntUI(model)
+            val authModel: AuthModel = viewModel {
+                AuthModel(model)
+            }
+            PlAAAAntUI(authModel, model)
         }
     }
 

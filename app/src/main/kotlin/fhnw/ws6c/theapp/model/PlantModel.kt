@@ -23,10 +23,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+
 
 
 class PlantModel(
-    private val context: Context,
+    val context: Context,
     private val mqttConnector: MqttConnector,
     private val firebaseService: FirebaseService,
 ) {
@@ -39,12 +42,14 @@ class PlantModel(
     private val channelId = "fhnw.ws6c.theapp.notifications"
     lateinit var pendingIntent : PendingIntent
 
-    var currentScreen by mutableStateOf(Screen.HOME)
+    var currentScreen by mutableStateOf(Screen.SIGNIN)
     var plantList by mutableStateOf<List<Plant>>(emptyList())
     var plantsThatNeedWaterList by mutableStateOf<List<Plant>>(emptyList())
     var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else defaultPlant())
 
     private var notificationMessage by mutableStateOf("")  //TODO: wird noch nirgends angezeigt
+
+    val user = Firebase.auth.currentUser
 
     init {
         setupNotification()
