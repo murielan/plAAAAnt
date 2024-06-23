@@ -110,6 +110,7 @@ dependencies {
     // video player androidyoutubeplayer
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0'
 
+
     //room - db
     def room_version = '2.6.0'
 

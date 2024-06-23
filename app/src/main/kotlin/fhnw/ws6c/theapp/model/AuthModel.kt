@@ -39,10 +39,18 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
             }
     }
 
+    fun signInScreen() {
+        plantModel.currentScreen = Screen.SIGNIN
+    }
+
+    fun signUpScreen() {
+        plantModel.currentScreen = Screen.SIGNUP
+    }
+
     fun logout() {
         auth.signOut()
         with(sharedPref.edit()) {
-            putBoolean("is_logged_in", true)
+            putBoolean("is_logged_in", false)
             apply()
         }
         plantModel.currentScreen = Screen.SIGNUP
@@ -53,6 +61,7 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
             with(sharedPref.edit()) {
                 putBoolean("is_logged_in", true)
                 apply()
+                Log.d(TAG, "Loggedin:true")
             }
             plantModel.currentScreen = Screen.HOME
         } else {
