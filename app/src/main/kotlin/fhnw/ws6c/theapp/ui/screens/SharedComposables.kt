@@ -12,12 +12,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,8 +34,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,12 +49,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fhnw.ws6c.theapp.data.Plant
+import fhnw.ws6c.theapp.model.AuthModel
 import fhnw.ws6c.theapp.model.PlantModel
 import fhnw.ws6c.theapp.model.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationTopAppBar(model: PlantModel) {
+fun NavigationTopAppBar(model: PlantModel, authModel: AuthModel) {
     with(model) {
         Box(
             modifier = Modifier
@@ -66,7 +73,8 @@ fun NavigationTopAppBar(model: PlantModel) {
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 32.sp
                         )
-                    }
+                    },
+                    actions = { dropDownMenu(authModel) }
                 )
             } else {
                 TopAppBar(
@@ -251,6 +259,39 @@ fun MyTextField(labelValue: String) {
             textValue.value = it
         },
     )
+}
+
+@Composable
+fun dropDownMenu(model: AuthModel) {
+    with(model) {
+        var expanded by remember { mutableStateOf(false) }
+
+        Box(
+            modifier = Modifier
+                .wrapContentSize(Alignment.TopEnd)
+        ) {
+            IconButton(onClick = { expanded = !expanded }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "More"
+                )
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Settings") },
+                    onClick = { }
+                )
+                DropdownMenuItem(
+                    text = { Text("Logout") },
+                    onClick = { logout() }
+                )
+            }
+        }
+    }
 }
 
 

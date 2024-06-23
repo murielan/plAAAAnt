@@ -13,13 +13,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import fhnw.ws6c.theapp.model.AuthModel
 import fhnw.ws6c.theapp.model.PlantModel
 
 @Composable
-fun HomeScreen(model: PlantModel) {
+fun HomeScreen(model: PlantModel, authModel: AuthModel) {
     with(model) {
         Scaffold(
-            topBar = { NavigationTopAppBar(model) },
+            topBar = { NavigationTopAppBar(model, authModel) },
             content = { innerPadding -> HomeContent(model, innerPadding) },
             bottomBar = { NavigationBottomAppBar(model) }
         )

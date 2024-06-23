@@ -20,9 +20,9 @@ fun PlAAAAntUI(authModel: AuthModel, model: PlantModel) {
                 when (screen) {
                     Screen.SIGNUP -> { SignUpScreen(authModel) }
                     Screen.SIGNIN -> { SignInScreen(authModel) }
-                    Screen.HOME -> { HomeScreen(model) }
-                    Screen.PLANT -> { PlantScreen(model)}
-                    Screen.AAAA -> { AAAAScreen(model)}
+                    Screen.HOME -> { HomeScreen(model, authModel) }
+                    Screen.PLANT -> { PlantScreen(model, authModel)}
+                    Screen.AAAA -> { AAAAScreen(model, authModel)}
                 }
             }
         }

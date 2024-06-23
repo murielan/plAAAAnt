@@ -41,6 +41,11 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
 
     fun logout() {
         auth.signOut()
+        with(sharedPref.edit()) {
+            putBoolean("is_logged_in", true)
+            apply()
+        }
+        plantModel.currentScreen = Screen.SIGNUP
     }
 
     private fun updateUI(user: FirebaseUser?) {

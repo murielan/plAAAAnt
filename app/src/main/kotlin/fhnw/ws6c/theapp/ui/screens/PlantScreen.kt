@@ -26,13 +26,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import fhnw.ws6c.R
 import fhnw.ws6c.theapp.data.Plant
+import fhnw.ws6c.theapp.model.AuthModel
 import fhnw.ws6c.theapp.model.PlantModel
 
 @Composable
-fun PlantScreen(model: PlantModel) {
+fun PlantScreen(model: PlantModel, authModel: AuthModel) {
     with(model) {
         Scaffold(
-            topBar = { NavigationTopAppBar(model) },
+            topBar = { NavigationTopAppBar(model, authModel) },
             content = { innerPadding -> SinglePlantContent(currentPlant, innerPadding) },
             bottomBar = { NavigationBottomAppBar(model) }
         )
