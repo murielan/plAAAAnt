@@ -1,13 +1,16 @@
-== ws6C FS23 - Mobile Experience Project
+== PlAAAAnt - Mobile App
 
 ## Overview
-THe Android app "PlAAAAnt" is designed to get screamed at (get notifications), when one of your plants is running low on water. Originally developed collaboratively, I will continue its development independently.
+The android app "PlAAAAnt" is designed for you to get screamed at (get notifications) when one of your plants is running low on water. Originally developed collaboratively in the FHNW module ws6C FS23, I continue its development independently.
 
 ## Features
 - Feature 1: Overview of your plants and their wellbeing
-- Feature 2: Get notifications on low humidity
-- Feature 3: Add, edit or delete plants
-- Feature 4: Usage of an external sensor to measure the humidity
+- Feature 2: Usage of an external sensor to measure the humidity and send it to a broker
+- Feature 3: Receive humidity via broker subscription
+- Feature 4: Get notifications on low humidity
+- Feature 5: Add, edit or delete plants (in development)
+- Feature 6: Login (in development)
+
 
 ## Screenshots
 ![Screenshot 1](path/to/screenshot1.png)
@@ -18,7 +21,7 @@ To install and run the app on your local machine, follow these steps:
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/your-repo-name.git
+    git clone https://github.com/murielan/plAAAAnt.git
     ```
 
 2. **Open the project** in Android Studio.
@@ -26,7 +29,7 @@ To install and run the app on your local machine, follow these steps:
 3. **Build and run** the project on an emulator or a physical device.
 
 ## Usage
-Sensor instructions here
+Sensor instructions TBD
 
 ## Contributing
 The initial development was a team effort, but I am now the sole maintainer of this project.
@@ -35,7 +38,7 @@ The initial development was a team effort, but I am now the sole maintainer of t
 
 ## Acknowledgments
 - Michael Job - Contributions to firebase dependencies.
-- Henrique Dias Ferreira - Contributions to .
+- Henrique Dias Ferreira - Contributions to project planning.
 
 ## Contact
 For any questions or suggestions, please contact me at [your-email@example.com].
