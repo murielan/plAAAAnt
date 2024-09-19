@@ -33,11 +33,9 @@ Sensor instructions TBD
 ## Contributing
 The initial development was a team effort, but I am now the sole maintainer of this project.
 
-## Licence
-
 ## Acknowledgments
 - Michael Job - Contributions to firebase dependencies.
 - Henrique Dias Ferreira - Contributions to project planning.
 
 ## Contact
-For any questions or suggestions, please contact me at [your-email@example.com].
+For any questions or suggestions, please contact me.
