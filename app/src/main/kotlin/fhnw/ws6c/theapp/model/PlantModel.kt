@@ -27,7 +27,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 
-
 class PlantModel(
     val context: Context,
     private val mqttConnector: MqttConnector,
@@ -40,14 +39,18 @@ class PlantModel(
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val channelId = "fhnw.ws6c.theapp.notifications"
-    lateinit var pendingIntent : PendingIntent
+    lateinit var pendingIntent: PendingIntent
 
     var currentScreen by mutableStateOf(Screen.SIGNIN)
     var plantList by mutableStateOf<List<Plant>>(emptyList())
     var plantsThatNeedWaterList by mutableStateOf<List<Plant>>(emptyList())
     var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else defaultPlant())
 
-    private var notificationMessage by mutableStateOf("")  //TODO: wird noch nirgends angezeigt
+    var notificationMessage by mutableStateOf("")  //TODO: wird noch nirgends angezeigt
+    var connectionFailed by mutableStateOf(false)
+        private set
+    var firebaseError by mutableStateOf(false)
+        private set
 
     val user = Firebase.auth.currentUser
 
@@ -62,14 +65,32 @@ class PlantModel(
             },
             onError = { _, p ->
                 notificationMessage = p
-            })
+                connectionFailed = true
+            },
+            onConnectionFailed = {
+                notificationMessage = "Connection failed. Please try again."
+                connectionFailed = true
+            }
+        )
+    }
+
+    fun resetConnectionFailure() {
+        connectionFailed = false
     }
 
     fun getPlants() {
         val job = modelScope.launch {
-            firebaseService.getPlants {
-                plantList = it
-            }
+            firebaseService.getPlants(
+                onSuccess = {
+                    plantList = it
+                },
+                onFailure = {
+                    notificationMessage = it
+                    firebaseError = true
+                }
+            )
+
+
         }
         //get FirebaseMeasurements after plants are loaded
         job.invokeOnCompletion { getDbMeasurements() }
@@ -79,7 +100,11 @@ class PlantModel(
     private fun addMeasurementToPlant(measurement: Measurement) {
         //persist in firebase
         modelScope.launch {
-            firebaseService.addMeasurementToPlant(measurement = measurement)
+            firebaseService.addMeasurementToPlant(
+                measurement = measurement,
+                onFailure = {
+                    onFirebaseError(it)
+            })
         }
         //add to plant in memory
         for (plant in plantList) {
@@ -94,7 +119,7 @@ class PlantModel(
     private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement, notify: Boolean) {
         // notification if needsWater changes
         if (!plant.needsWater.value && measurement.humidity < plant.minHumidity) {
-            if(notify) showNotification(plant.name)
+            if (notify) showNotification(plant.name)
             plant.needsWater.value = true
             plantsThatNeedWaterList += plant
         } else if (plant.needsWater.value && measurement.humidity > plant.minHumidity) {
@@ -106,22 +131,27 @@ class PlantModel(
     // get Measurements from Firebase and add to each known plant
     private fun getDbMeasurements() {
         modelScope.launch {
-            firebaseService.getDbMeasurements {
-                for (measurement in it){
-                    for (plant in plantList) {
-                        if (plant.sensorId == measurement.sensorId) {
-                            plant.measurements.apply { add(measurement) }
-                            break
+            firebaseService.getDbMeasurements(
+                onSuccess = {
+                    for (measurement in it) {
+                        for (plant in plantList) {
+                            if (plant.sensorId == measurement.sensorId) {
+                                plant.measurements.apply { add(measurement) }
+                                break
+                            }
                         }
                     }
-                }
-                // check with last Measurement if water is needed
-                for(plant in plantList) {
-                    if (plant.measurements.lastOrNull() != null) {
-                        checkIfWaterNeeded(plant, plant.measurements.last(), false)
+                    // check with last Measurement if water is needed
+                    for (plant in plantList) {
+                        if (plant.measurements.lastOrNull() != null) {
+                            checkIfWaterNeeded(plant, plant.measurements.last(), false)
+                        }
                     }
+                },
+                onFailure = {
+                    onFirebaseError(it)
                 }
-            }
+            )
         }
     }
 
@@ -146,7 +176,10 @@ class PlantModel(
             NotificationManager.IMPORTANCE_HIGH
         )
 
-        channel.setSound(Uri.parse("android.resource://" + context.packageName + "/" + R.raw.scream), audioAttributes)
+        channel.setSound(
+            Uri.parse("android.resource://" + context.packageName + "/" + R.raw.scream),
+            audioAttributes
+        )
 
         notificationManager.createNotificationChannel(channel)
 
@@ -172,6 +205,11 @@ class PlantModel(
 
         // Show the notification
         notificationManager.notify(1, notification)
+    }
+
+    private fun onFirebaseError(message: String) {
+        notificationMessage = message
+        firebaseError = true
     }
 
 }

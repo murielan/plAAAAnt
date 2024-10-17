@@ -14,7 +14,7 @@ class FirebaseService {
     private var newPlants = mutableListOf<Plant>()
     private var newMeasurements = mutableListOf<Measurement>()
 
-    fun getPlants(onSuccess: (plants: List<Plant>)->Unit) {
+    fun getPlants(onSuccess: (plants: List<Plant>)->Unit, onFailure: (error: String)->Unit) {
         plantRef.get()
             .addOnSuccessListener { result ->
                 run {
@@ -29,10 +29,11 @@ class FirebaseService {
             }
             .addOnFailureListener { exception ->
                 Log.e(ContentValues.TAG, "Error fetching plants: ${exception.message}", exception)
+                onFailure("Error fetching plants")
             }
     }
 
-    fun getDbMeasurements(onSuccess: (measurements: List<Measurement>)->Unit) {
+    fun getDbMeasurements(onSuccess: (measurements: List<Measurement>)->Unit, onFailure: (error: String) -> Unit) {
         db.collection("measurements")
             .orderBy("time", Query.Direction.ASCENDING)
             .get()
@@ -47,11 +48,12 @@ class FirebaseService {
             .addOnFailureListener { exception ->
                 Log.w(ContentValues.TAG, "Error getting documents.", exception)
                 //TODO: inform user ?
+                onFailure("Error getting measurements")
             }
     }
 
     // if MQTT client receives measurement, add it to firebase and refresh measurements
-    fun addMeasurementToPlant(measurement: Measurement) {
+    fun addMeasurementToPlant(measurement: Measurement, onFailure: (error: String) -> Unit) {
         db.collection("measurements")
             .add(measurement.asHashMap())
             .addOnSuccessListener { documentReference ->
@@ -60,6 +62,7 @@ class FirebaseService {
             .addOnFailureListener { e ->
                 Log.w(ContentValues.TAG, "Error adding measurement", e)
                 // TODO: inform user ?
+                onFailure("Error adding measurements to plant")
             }
     }
 }
