@@ -23,7 +23,7 @@ private val appDarkColors = darkColorScheme(
     //Typography and icon colors
     onPrimary        = Color.White,
     onSecondary      = Color.White,
-    onBackground     = TextColorDark,
+    onBackground     = Color.White,
     onSurface        = TextColorDark,
     onError          = TextColorDark,
 )

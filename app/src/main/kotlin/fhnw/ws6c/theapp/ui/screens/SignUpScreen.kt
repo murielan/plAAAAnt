@@ -19,8 +19,13 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -38,7 +43,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,9 +54,10 @@ import fhnw.ws6c.R
 import fhnw.ws6c.theapp.model.AuthModel
 
 @Composable
-fun SignUpScreen(viewModel: AuthModel) {
+fun SignUpScreen(authModel: AuthModel) {
     var email by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
+    var passwordVisible by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
 
@@ -61,11 +70,16 @@ fun SignUpScreen(viewModel: AuthModel) {
             .padding(28.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = "Hey there,", textAlign = TextAlign.Center)
+            Text(
+                text = "Hey there,",
+                textAlign = TextAlign.Center,
+                style = TextStyle(color = MaterialTheme.colorScheme.onBackground)
+            )
             Text(
                 text = "Create an Account", textAlign = TextAlign.Center,
                 style = TextStyle(
-                    fontSize = 28.sp
+                    fontSize = 28.sp,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -79,9 +93,15 @@ fun SignUpScreen(viewModel: AuthModel) {
                     .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(24.dp))
+            if (authModel.email.text.isNotEmpty()) {
+                email = authModel.email
+            }
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = {
+                    email = it
+                    authModel.email = it
+                },
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,9 +117,22 @@ fun SignUpScreen(viewModel: AuthModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, description)
+                    }
+                },
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        viewModel.createAccount(email.text, password.text)
+                        authModel.createAccount(email.text, password.text)
                         keyboardController?.hide()
                     }
                 )
@@ -107,7 +140,7 @@ fun SignUpScreen(viewModel: AuthModel) {
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
-                    viewModel.createAccount(email.text, password.text)
+                    authModel.createAccount(email.text, password.text)
                     keyboardController?.hide()
                 },
                 modifier = Modifier
@@ -128,11 +161,13 @@ fun SignUpScreen(viewModel: AuthModel) {
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                Text("Already got an account? ", fontSize = 14.sp)
+                Text("Already got an account? ",
+                    fontSize = 14.sp,
+                    style = TextStyle(color = MaterialTheme.colorScheme.onBackground))
                 ClickableText(text = AnnotatedString("Login"),
                     style = TextStyle(color = MaterialTheme.colorScheme.primary, fontSize = 15.sp),
                     onClick = {
-                        viewModel.signInScreen()
+                        authModel.signInScreen()
                     })
             }
 
@@ -141,9 +176,10 @@ fun SignUpScreen(viewModel: AuthModel) {
 }
 
 @Composable
-fun SignInScreen(viewModel: AuthModel) {
+fun LoginScreen(authModel: AuthModel) {
     var email by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
+    var passwordVisible by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
 
@@ -156,11 +192,14 @@ fun SignInScreen(viewModel: AuthModel) {
             .padding(28.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = "Welcome Back,", textAlign = TextAlign.Center)
+            Text(text = "Welcome Back,",
+                textAlign = TextAlign.Center,
+                style = TextStyle(color = MaterialTheme.colorScheme.onBackground))
             Text(
-                text = "Sign In", textAlign = TextAlign.Center,
+                text = "Login", textAlign = TextAlign.Center,
                 style = TextStyle(
-                    fontSize = 28.sp
+                    fontSize = 28.sp,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -174,10 +213,15 @@ fun SignInScreen(viewModel: AuthModel) {
                     .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(24.dp))
+            if (authModel.email.text.isNotEmpty()) {
+                email = authModel.email
+            }
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = it
+                                authModel.email = it},
                 label = { Text("Email") },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -189,18 +233,32 @@ fun SignInScreen(viewModel: AuthModel) {
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, description)
+                    }
+                },
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        viewModel.createAccount(email.text, password.text)
+                        authModel.signIn(email.text, password.text)
                         keyboardController?.hide()
                     }
                 )
             )
             Button(
-                onClick = { viewModel.signIn(email.text, password.text) },
+                onClick = { authModel.signIn(email.text, password.text) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -211,7 +269,7 @@ fun SignInScreen(viewModel: AuthModel) {
                     Color.White
                 )
             ) {
-                Text("Sign In")
+                Text("Login")
             }
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -219,11 +277,13 @@ fun SignInScreen(viewModel: AuthModel) {
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                Text("New here? ", fontSize = 14.sp)
+                Text("New here? ",
+                    fontSize = 14.sp,
+                    style = TextStyle(color = MaterialTheme.colorScheme.onBackground))
                 ClickableText(
                     text = AnnotatedString("Create an account"),
                     style = TextStyle(color = MaterialTheme.colorScheme.primary, fontSize = 15.sp),
-                    onClick = { viewModel.signUpScreen() })
+                    onClick = { authModel.signUpScreen() })
             }
         }
     }

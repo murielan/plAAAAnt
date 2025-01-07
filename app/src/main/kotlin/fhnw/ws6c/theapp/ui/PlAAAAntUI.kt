@@ -8,7 +8,7 @@ import fhnw.ws6c.theapp.model.Screen
 import fhnw.ws6c.theapp.ui.screens.AAAAScreen
 import fhnw.ws6c.theapp.ui.screens.HomeScreen
 import fhnw.ws6c.theapp.ui.screens.PlantScreen
-import fhnw.ws6c.theapp.ui.screens.SignInScreen
+import fhnw.ws6c.theapp.ui.screens.LoginScreen
 import fhnw.ws6c.theapp.ui.screens.SignUpScreen
 import fhnw.ws6c.theapp.ui.theme.AppTheme
 
@@ -19,7 +19,7 @@ fun PlAAAAntUI(authModel: AuthModel, model: PlantModel) {
             Crossfade(targetState = currentScreen, label = "") { screen ->
                 when (screen) {
                     Screen.SIGNUP -> { SignUpScreen(authModel) }
-                    Screen.SIGNIN -> { SignInScreen(authModel) }
+                    Screen.SIGNIN -> { LoginScreen(authModel) }
                     Screen.HOME -> { HomeScreen(model, authModel) }
                     Screen.PLANT -> { PlantScreen(model, authModel)}
                     Screen.AAAA -> { AAAAScreen(model, authModel)}

@@ -13,11 +13,11 @@ class MqttConnector(private val context: Context,
                     mqttBroker: String,
                     private val qos: MqttQos = MqttQos.EXACTLY_ONCE){
 
-    private val topic = "fhnw/ws6c/plaaaant"
+    private val topic = "app/plaaaant"
 
     private val client = Mqtt5Client.builder()
         .serverHost(mqttBroker)
-        //.serverPort(1884) //TODO change for Sensor Testing 1883
+        //.serverPort(1884) //TODO change for Sensor 1883
         .identifier(UUID.randomUUID().toString())
         .buildAsync()
 

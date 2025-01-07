@@ -3,6 +3,7 @@ package fhnw.ws6c.theapp.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -10,6 +11,7 @@ import com.google.firebase.auth.FirebaseUser
 class AuthModel(private val plantModel: PlantModel) : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val sharedPref: SharedPreferences = plantModel.context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    var email: TextFieldValue = TextFieldValue()
 
     fun createAccount(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
