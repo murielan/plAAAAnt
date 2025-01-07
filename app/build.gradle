@@ -1,8 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id "org.jetbrains.kotlin.kapt"
-    id 'com.google.gms.google-services'//room
+    id "com.google.devtools.ksp"
+    id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.plugin.compose'//room
 }
 
 android {
@@ -41,9 +42,9 @@ android {
         compose true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion "$compiler_version"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion "$compiler_version"
+//    }
 
     packagingOptions {
         jniLibs {
@@ -58,13 +59,13 @@ android {
 }
 
 dependencies {
-    implementation('com.google.accompanist:accompanist-permissions:0.33.2-alpha')
+    implementation('com.google.accompanist:accompanist-permissions:0.37.0')
 
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.12.0'
 
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
 
-    implementation 'androidx.activity:activity-compose:1.8.1'
+    implementation 'androidx.activity:activity-compose:1.9.3'
     // implementation 'androidx.fragment:fragment-ktx:1.4.1'
 
     // the compose libraries
@@ -80,74 +81,74 @@ dependencies {
 
     // fuer den Layout Inspector
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    implementation 'com.google.firebase:firebase-storage:21.0.0'
-    implementation 'com.google.firebase:firebase-firestore-ktx:25.0.0'
-    implementation 'junit:junit:4.12'
+    implementation 'com.google.firebase:firebase-storage:21.0.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:25.1.1'
+    implementation 'junit:junit:4.13.2'
 
     //Unit tests
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.testng:testng:6.9.6'
+    testImplementation 'org.testng:testng:7.10.2'
     // Required for instrumented tests
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    testImplementation 'org.json:json:20231013'
-    implementation 'androidx.test:monitor:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    testImplementation 'org.json:json:20241224'
+    implementation 'androidx.test:monitor:1.7.2'
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // local services
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
 
     // Preferences DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation 'androidx.datastore:datastore-preferences:1.1.1'
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_version"
 
     // external libraries
-    implementation 'com.hivemq:hivemq-mqtt-client:1.3.3'
+    implementation 'com.hivemq:hivemq-mqtt-client:1.3.4'
 
     // android exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     // video player androidyoutubeplayer
-    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0'
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1'
 
 
     //room - db
-    def room_version = '2.6.0'
+    def room_version = '2.6.1'
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     implementation "androidx.room:room-ktx:$room_version"
-    // To use Kotlin annotation processing tool (kapt) - also see plugins at top!
-    kapt "androidx.room:room-compiler:$room_version"
+    // To use Kotlin annotation processing tool (ksp) - also see plugins at top!
+    ksp "androidx.room:room-compiler:$room_version"
 
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
     // System Ui Controller
-    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.27.0'
+    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.36.0'
 
     //Lotti Animations
-    implementation 'com.airbnb.android:lottie-compose:6.1.0'
+    implementation 'com.airbnb.android:lottie-compose:6.6.2'
 
     // Import the BoM for the Firebase platform
-    implementation(platform('com.google.firebase:firebase-bom:32.5.0'))
+    implementation(platform('com.google.firebase:firebase-bom:33.7.0'))
 
     // Firebase authentication
     implementation("com.google.firebase:firebase-auth")
 
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation('com.google.firebase:firebase-firestore-ktx:24.9.1')
+    implementation('com.google.firebase:firebase-firestore-ktx:25.1.1')
 
     // For splash screen
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
     // Mockito
-    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.mockito:mockito-core:5.15.2'
 
     // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
+    implementation(platform('com.google.firebase:firebase-bom:33.7.0'))
 
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
