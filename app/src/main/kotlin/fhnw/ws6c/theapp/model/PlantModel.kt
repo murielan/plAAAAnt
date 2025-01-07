@@ -41,7 +41,7 @@ class PlantModel(
     private val channelId = "fhnw.ws6c.theapp.notifications"
     lateinit var pendingIntent: PendingIntent
 
-    var currentScreen by mutableStateOf(Screen.SIGNIN)
+    var currentScreen by mutableStateOf(Screen.LOGIN)
     var plantList by mutableStateOf<List<Plant>>(emptyList())
     var plantsThatNeedWaterList by mutableStateOf<List<Plant>>(emptyList())
     var currentPlant by mutableStateOf(if (plantList.isNotEmpty()) plantList[0] else defaultPlant())

@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class Screen(val title: String, val icon: ImageVector) {
     SIGNUP("Sign Up", Icons.Filled.Home),
-    SIGNIN("Sign In", Icons.Filled.Home),
+    LOGIN("Sign In", Icons.Filled.Home),
     HOME("PlAAAAnts", Icons.Filled.Home),
     PLANT("", Icons.Filled.Home),
     AAAA("AAAA!!", Icons.Filled.Warning)

@@ -137,6 +137,13 @@ fun SignUpScreen(authModel: AuthModel) {
                     }
                 )
             )
+            authModel.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
@@ -257,6 +264,13 @@ fun LoginScreen(authModel: AuthModel) {
                     }
                 )
             )
+            authModel.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
             Button(
                 onClick = { authModel.signIn(email.text, password.text) },
                 modifier = Modifier

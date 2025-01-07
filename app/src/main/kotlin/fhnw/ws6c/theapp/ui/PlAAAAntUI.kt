@@ -19,7 +19,7 @@ fun PlAAAAntUI(authModel: AuthModel, model: PlantModel) {
             Crossfade(targetState = currentScreen, label = "") { screen ->
                 when (screen) {
                     Screen.SIGNUP -> { SignUpScreen(authModel) }
-                    Screen.SIGNIN -> { LoginScreen(authModel) }
+                    Screen.LOGIN -> { LoginScreen(authModel) }
                     Screen.HOME -> { HomeScreen(model, authModel) }
                     Screen.PLANT -> { PlantScreen(model, authModel)}
                     Screen.AAAA -> { AAAAScreen(model, authModel)}

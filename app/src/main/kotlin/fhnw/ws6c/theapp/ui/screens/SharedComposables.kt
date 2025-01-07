@@ -118,7 +118,7 @@ fun NavigationBottomAppBar(model: PlantModel) {
                 tonalElevation = 0.dp
             ) {
                 Screen.entries.forEach { screen ->
-                    if (screen != Screen.PLANT && screen != Screen.SIGNUP && screen != Screen.SIGNIN) {
+                    if (screen != Screen.PLANT && screen != Screen.SIGNUP && screen != Screen.LOGIN) {
                         var countPlantThirsty = counterPlantsThatNeedWater()
                         NavigationBarItem(
                             icon = {
