@@ -41,6 +41,8 @@ class PlantModel(
     private val channelId = "fhnw.ws6c.theapp.notifications"
     lateinit var pendingIntent: PendingIntent
 
+    var isLoading by mutableStateOf(false)
+
     var currentScreen by mutableStateOf(Screen.LOGIN)
     var plantList by mutableStateOf<List<Plant>>(emptyList())
     var plantsThatNeedWaterList by mutableStateOf<List<Plant>>(emptyList())
@@ -79,6 +81,7 @@ class PlantModel(
     }
 
     fun getPlants() {
+        isLoading = true
         val job = modelScope.launch {
             firebaseService.getPlants(
                 onSuccess = {
@@ -90,10 +93,10 @@ class PlantModel(
                 }
             )
 
-
         }
         //get FirebaseMeasurements after plants are loaded
         job.invokeOnCompletion { getDbMeasurements() }
+        isLoading = false
     }
 
 
@@ -118,11 +121,11 @@ class PlantModel(
 
     private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement, notify: Boolean) {
         // notification if needsWater changes
-        if (!plant.needsWater.value && measurement.humidity < plant.minHumidity) {
+        if ((plant.needsWater.value == false || plant.needsWater.value == null) && measurement.humidity < plant.minHumidity) {
             if (notify) showNotification(plant.name)
             plant.needsWater.value = true
             plantsThatNeedWaterList += plant
-        } else if (plant.needsWater.value && measurement.humidity > plant.minHumidity) {
+        } else if ((plant.needsWater.value == true || plant.needsWater.value == null) && measurement.humidity > plant.minHumidity) {
             plant.needsWater.value = false
             plantsThatNeedWaterList -= plant
         }
@@ -155,7 +158,7 @@ class PlantModel(
         }
     }
 
-    fun counterPlantsThatNeedWater(): Int = plantList.count { it.needsWater.value }
+    fun counterPlantsThatNeedWater(): Int = plantList.count { it.needsWater.value == true }
 
     private fun setupNotification() {
         val audioAttributes = AudioAttributes.Builder()

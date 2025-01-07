@@ -24,10 +24,10 @@ class MainActivity : ComponentActivity() {
         //TODO: correct naming of app and all files, namespace, applicationId etc. (do not use TheUi, TheModel, TheApp etc.) - check gradle files!
         installSplashScreen()
 
+        firebaseService = FirebaseService()
+
         mqttConnector = MqttConnector(this, "broker.hivemq.com")
         mqttConnector.startForegroundService()
-
-        firebaseService = FirebaseService()
 
         model = PlantModel(this, mqttConnector, firebaseService)
         model.getPlants()

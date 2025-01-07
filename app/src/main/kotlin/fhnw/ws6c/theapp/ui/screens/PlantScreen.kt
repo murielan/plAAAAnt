@@ -76,7 +76,7 @@ fun PlantEmotion(currentPlant: Plant) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (needsWater.value) {
+            if (needsWater.value == true) {
                 SadPlant(currentPlant)
             } else {
                 HappyPlant(currentPlant)

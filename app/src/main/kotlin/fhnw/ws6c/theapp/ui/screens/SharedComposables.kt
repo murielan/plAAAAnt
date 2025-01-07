@@ -165,10 +165,15 @@ fun PlantBox(model: PlantModel, plant: Plant) {
                 .fillMaxWidth(0.49f)
                 .clip(RoundedCornerShape(8.dp))
                 .background(
-                    if (plant.needsWater.value) {
+                    if (plant.needsWater.value == true)
+                    {
                         MaterialTheme.colorScheme.tertiaryContainer
-                    } else {
+                    } else if (plant.needsWater.value == false)
+                    {
                         MaterialTheme.colorScheme.secondaryContainer
+                    }
+                    else {
+                        MaterialTheme.colorScheme.errorContainer
                     }
                 )
                 .clickable {
@@ -204,7 +209,7 @@ fun PlantNameText(plant: Plant) {
 
 @Composable
 fun AAAAText(plant: Plant) {
-    if (plant.needsWater.value) {
+    if (plant.needsWater.value == true) {
         Text(
             text = "AAAAA!!",
             fontWeight = FontWeight.Bold,
@@ -221,7 +226,7 @@ fun AAAAText(plant: Plant) {
 @Composable
 fun PlantImage(plant: Plant) {
     with(plant) {
-        if (needsWater.value) {
+        if (needsWater.value == true) {
             Image(
                 painter = painterResource(getPictureDrawable()),
                 contentDescription = "Sad Plant",

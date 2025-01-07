@@ -9,6 +9,8 @@ val greenLight  = Color(0xFFE0F8EE)
 val orange      = Color(0xFFE0C181)
 val orangeLight = Color(0xFFF8F1E0)
 val error       = Color(0xFFDA5050)
+val grey        = Color(0xff414859)
+val greyLight   = Color(0xfff0f2f7)
 
 val TextColor       = Color(0xFF707572)
 val TextColorLight  = Color(0xFF9DA4A5)

@@ -16,7 +16,7 @@ data class Plant(val json: JSONObject) {
     val picture: Int = json.optInt("picture", 3)
     val sensorId: Int = json.optInt("sensorId", 0)
     var measurements = mutableListOf<Measurement>()
-    var needsWater: MutableState<Boolean> = mutableStateOf(false)
+    var needsWater: MutableState<Boolean?> = mutableStateOf(null)
 
     constructor(jsonString: String) : this(JSONObject(jsonString))
 
@@ -36,17 +36,17 @@ data class Plant(val json: JSONObject) {
     )
 
     fun getPictureDrawable(): Int {
-        if (picture == 1 && !needsWater.value) {
+        if (picture == 1 && needsWater.value == false) {
             return R.drawable.aloe_happy
-        } else if (picture == 1 && needsWater.value) {
+        } else if (picture == 1 && needsWater.value == true) {
             return R.drawable.aloe_sad
-        } else if (picture == 2 && !needsWater.value) {
+        } else if (picture == 2 && needsWater.value == false) {
             return R.drawable.mons_happy
-        } else if (picture == 2 && needsWater.value) {
+        } else if (picture == 2 && needsWater.value == true) {
             return R.drawable.mons_sad
-        } else if (picture == 3 && !needsWater.value) {
+        } else if (picture == 3 && needsWater.value == false) {
             return R.drawable.cact_happy
-        } else if (picture == 3 && needsWater.value) {
+        } else if (picture == 3 && needsWater.value == true) {
             return R.drawable.cact_sad
         }
         return R.drawable.aloe_sad

@@ -15,6 +15,7 @@ private val appDarkColors = darkColorScheme(
     secondaryContainer  = greenDark,
     tertiary            = orangeFont,
     tertiaryContainer   = orangeDark,
+    errorContainer      = grey,
 
     background       = backgroundDark,
     surface          = backgroundDark,
@@ -37,6 +38,7 @@ private val appLightColors = lightColorScheme(
     secondaryContainer = greenLight,
     tertiary        = orange,
     tertiaryContainer = orangeLight,
+    errorContainer      = greyLight,
 
     background       = Color.White,
     surface          = Color.White,
