@@ -9,6 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 
 class AuthModel(private val plantModel: PlantModel) : ViewModel() {
@@ -19,7 +21,7 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
 
     fun createAccount(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {
-            errorMessage = "Please enter email and password."
+            errorMessage = "Bitte gib Email und Passwort ein."
             return
         }
         auth.createUserWithEmailAndPassword(email, password)
@@ -30,7 +32,7 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
                     updateUI(user)
                 } else {
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    errorMessage = task.exception?.localizedMessage ?: "Authentication failed."
+                    errorMessage = getCustomErrorMessage(task.exception)
                     updateUI(null)
                 }
             }
@@ -38,7 +40,7 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
 
     fun signIn(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {
-            errorMessage = "Please enter email and password."
+            errorMessage = "Bitte gib Email und Passwort ein."
             return
         }
         auth.signInWithEmailAndPassword(email, password)
@@ -49,7 +51,7 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
                     updateUI(user)
                 } else {
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    errorMessage = task.exception?.localizedMessage ?: "Authentication failed."
+                    errorMessage = getCustomErrorMessage(task.exception)
                     updateUI(null)
                 }
             }
@@ -88,6 +90,20 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
 
     private fun clearErrorMessage() {
         errorMessage = null
+    }
+
+    private fun getCustomErrorMessage(exception: Exception?): String {
+        if (exception is FirebaseAuthException) {
+            return when (exception.errorCode) {
+                "ERROR_INVALID_EMAIL" -> "Die Email-Adresse ist ungültig."
+                "ERROR_INVALID_CREDENTIAL" -> "Die Email oder das Passwort ist ungültig."
+                "ERROR_USER_NOT_FOUND" -> "Es exisitiert kein Account mit dieser Email. Gehe zu Account erstellen."
+                "ERROR_EMAIL_ALREADY_IN_USE" -> "Diese Email wurde bereits verwendet. Gehe zum Login."
+                "ERROR_WEAK_PASSWORD" -> "Das Passwort ist zu schwach. Bitte wähle ein stärkeres Passwort."
+                else -> "Ein unerwarteter Fehler ist passiert. Bitte prüfe deine Eingaben und versuche es nochmals."
+            }
+        }
+        return "Ein unerwarteter Fehler ist passiert. Bitte prüfe deine Eingaben und versuche es nochmals."
     }
 
     companion object {

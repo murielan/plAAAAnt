@@ -71,12 +71,12 @@ fun SignUpScreen(authModel: AuthModel) {
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(
-                text = "Hey there,",
+                text = "Hey du,",
                 textAlign = TextAlign.Center,
                 style = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             Text(
-                text = "Create an Account", textAlign = TextAlign.Center,
+                text = "Account erstellen", textAlign = TextAlign.Center,
                 style = TextStyle(
                     fontSize = 28.sp,
                     color = MaterialTheme.colorScheme.onBackground
@@ -113,7 +113,7 @@ fun SignUpScreen(authModel: AuthModel) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text("Passwort") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -124,7 +124,7 @@ fun SignUpScreen(authModel: AuthModel) {
                         Icons.Filled.Visibility
                     else Icons.Filled.VisibilityOff
 
-                    val description = if (passwordVisible) "Hide password" else "Show password"
+                    val description = if (passwordVisible) "Passwort verstecken" else "Passwort anzeigen"
 
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(imageVector = image, description)
@@ -160,7 +160,7 @@ fun SignUpScreen(authModel: AuthModel) {
                     Color.White
                 )
             ) {
-                Text("Sign Up")
+                Text("Account erstellen")
             }
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -168,7 +168,7 @@ fun SignUpScreen(authModel: AuthModel) {
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                Text("Already got an account? ",
+                Text("Hast du bereits ein Account? ",
                     fontSize = 14.sp,
                     style = TextStyle(color = MaterialTheme.colorScheme.onBackground))
                 ClickableText(text = AnnotatedString("Login"),
@@ -199,7 +199,7 @@ fun LoginScreen(authModel: AuthModel) {
             .padding(28.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = "Welcome Back,",
+            Text(text = "Willkommen zurück,",
                 textAlign = TextAlign.Center,
                 style = TextStyle(color = MaterialTheme.colorScheme.onBackground))
             Text(
@@ -239,7 +239,7 @@ fun LoginScreen(authModel: AuthModel) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text("Passwort") },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -251,7 +251,7 @@ fun LoginScreen(authModel: AuthModel) {
                         Icons.Filled.Visibility
                     else Icons.Filled.VisibilityOff
 
-                    val description = if (passwordVisible) "Hide password" else "Show password"
+                    val description = if (passwordVisible) "Passwort verstecken" else "Passwort anzeigen"
 
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(imageVector = image, description)
@@ -291,11 +291,11 @@ fun LoginScreen(authModel: AuthModel) {
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                Text("New here? ",
+                Text("Neu hier? ",
                     fontSize = 14.sp,
                     style = TextStyle(color = MaterialTheme.colorScheme.onBackground))
                 ClickableText(
-                    text = AnnotatedString("Create an account"),
+                    text = AnnotatedString("Erstelle einen Account"),
                     style = TextStyle(color = MaterialTheme.colorScheme.primary, fontSize = 15.sp),
                     onClick = { authModel.signUpScreen() })
             }
