@@ -13,8 +13,7 @@ The android app "PlAAAAnt" is designed for you to get screamed at (get notificat
 
 
 ## Screenshots
-![Screenshot 1](path/to/screenshot1.png)
-![Screenshot 2](path/to/screenshot2.png)
+TBD  
 
 ## Installation
 To install and run the app on your local machine, follow these steps:
@@ -34,11 +33,9 @@ Sensor instructions TBD
 ## Contributing
 The initial development was a team effort, but I am now the sole maintainer of this project.
 
-## Licence
-
 ## Acknowledgments
 - Michael Job - Contributions to firebase dependencies.
 - Henrique Dias Ferreira - Contributions to project planning.
 
 ## Contact
-For any questions or suggestions, please contact me at [your-email@example.com].
+For any questions or suggestions, please contact me.
