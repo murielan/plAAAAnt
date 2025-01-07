@@ -215,6 +215,12 @@ fun AAAAText(plant: Plant) {
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.tertiary
         )
+    } else if(plant.needsWater.value == null) {
+        Text(
+            text = "???",
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
     } else {
         Text(
             text = "",
