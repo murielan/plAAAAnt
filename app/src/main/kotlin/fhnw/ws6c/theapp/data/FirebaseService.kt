@@ -15,6 +15,7 @@ class FirebaseService {
     private var newMeasurements = mutableListOf<Measurement>()
 
     fun getPlants(onSuccess: (plants: List<Plant>)->Unit, onFailure: (error: String)->Unit) {
+        Log.d("notification", "Trying to get plants...")
         plantRef.get()
             .addOnSuccessListener { result ->
                 run {

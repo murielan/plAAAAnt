@@ -12,24 +12,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import fhnw.ws6c.MainActivity
 import fhnw.ws6c.R
 import fhnw.ws6c.theapp.data.FirebaseService
 import fhnw.ws6c.theapp.data.Measurement
-import fhnw.ws6c.theapp.data.MqttConnector
+import fhnw.ws6c.theapp.data.MqttService
 import fhnw.ws6c.theapp.data.Plant
 import fhnw.ws6c.theapp.data.defaultPlant
+import fhnw.ws6c.theapp.receiver.MqttStaticReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 
 
 class PlantModel(
     val context: Context,
-    private val mqttConnector: MqttConnector,
     private val firebaseService: FirebaseService,
 ) {
 
@@ -57,24 +57,17 @@ class PlantModel(
     val user = Firebase.auth.currentUser
 
     init {
+        MqttStaticReceiver.setPlantModel(this)
         setupNotification()
     }
 
     fun connectAndSubscribe() {
-        mqttConnector.connectAndSubscribe(
-            onNewMessage = {
-                addMeasurementToPlant(Measurement(it))
-            },
-            onError = { _, p ->
-                notificationMessage = p
-                connectionFailed = true
-            },
-            onConnectionFailed = {
-                notificationMessage = "Connection failed. Please try again."
-                connectionFailed = true
-            }
-        )
+        // Start the MQTT Service
+        val intent = Intent(context, MqttService::class.java)
+        context.startService(intent)
     }
+
+
 
     fun resetConnectionFailure() {
         connectionFailed = false
@@ -82,32 +75,32 @@ class PlantModel(
 
     fun getPlants() {
         isLoading = true
-        val job = modelScope.launch {
+        modelScope.launch {
             firebaseService.getPlants(
                 onSuccess = {
                     plantList = it
+                    getDbMeasurements()
                 },
                 onFailure = {
+                    Log.d("notification", "Getting Plants failed. $it")
                     notificationMessage = it
                     firebaseError = true
                 }
             )
 
         }
-        //get FirebaseMeasurements after plants are loaded
-        job.invokeOnCompletion { getDbMeasurements() }
         isLoading = false
     }
 
 
-    private fun addMeasurementToPlant(measurement: Measurement) {
+    fun addMeasurementToPlant(measurement: Measurement) {
         //persist in firebase
         modelScope.launch {
             firebaseService.addMeasurementToPlant(
                 measurement = measurement,
                 onFailure = {
                     onFirebaseError(it)
-            })
+                })
         }
         //add to plant in memory
         for (plant in plantList) {

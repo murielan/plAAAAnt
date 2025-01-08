@@ -1,7 +1,7 @@
 package fhnw.ws6c.theapp.data
 
 import android.content.Context
-import android.content.Intent
+import android.util.Log
 import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
@@ -9,75 +9,74 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
 
-class MqttConnector(private val context: Context,
-                    mqttBroker: String,
-                    private val qos: MqttQos = MqttQos.EXACTLY_ONCE){
-
-    private val topic = "app/plaaaant"
-
+class MqttConnector(
+    private val context: Context,
+    mqttBroker: String,
+    private val qos: MqttQos = MqttQos.EXACTLY_ONCE
+) {
     private val client = Mqtt5Client.builder()
         .serverHost(mqttBroker)
-        //.serverPort(1884) //TODO change for Sensor 1883
         .identifier(UUID.randomUUID().toString())
         .buildAsync()
 
-    fun startForegroundService() {
-        val intent = Intent(context, MqttService::class.java)
-        context.startService(intent)
-    }
-
-    fun stopForegroundService() {
-        val intent = Intent(context, MqttService::class.java)
-        context.stopService(intent)
-    }
-
-    fun connectAndSubscribe(onNewMessage:       (JSONObject) -> Unit,
-                            onError:            (Exception, String) -> Unit = {e, _ -> e.printStackTrace()},
-                            onConnectionFailed: () -> Unit = {}) {
+    fun connectAndSubscribe(
+        onNewMessage: (JSONObject) -> Unit,
+        onError: (Exception, String) -> Unit = { e, _ -> e.printStackTrace() },
+        onConnectionFailed: () -> Unit = {}
+    ) {
+        Log.d("notification", "connecting to broker...")
         client.connectWith()
             .cleanStart(true)
             .keepAlive(30)
             .send()
-            .whenComplete { _, throwable ->
+            .whenComplete { ack, throwable ->
                 if (throwable != null) {
+                    Log.e("MqttConnector", "Failed to connect to the broker: ${throwable.message}")
                     onConnectionFailed()
-                } else { //erst wenn die Connection aufgebaut ist, kann subscribed werden
-                    subscribe(topic, onNewMessage, onError)
+                } else {
+                    // Subscribe after a successful connection
+                    Log.d("MqttConnector", "Connected to the broker: $ack")
+
+                    subscribe("app/plaaaant", onNewMessage, onError)
                 }
             }
+        Log.d("notification", "connecting finished")
     }
 
-    fun subscribe(topic:        String,
-                  onNewMessage: (JSONObject) -> Unit,
-                  onError:      (Exception, String) -> Unit = { e, _ -> e.printStackTrace() }){
+    fun disconnect() {
+        client.disconnectWith().send()
+    }
+
+    private fun subscribe(
+        topic: String,
+        onNewMessage: (JSONObject) -> Unit,
+        onError: (Exception, String) -> Unit = { e, _ -> e.printStackTrace() }
+    ) {
+        Log.d("notification", "subscribing...")
         client.subscribeWith()
             .topicFilter(topic)
             .qos(qos)
-            .noLocal(true)
             .callback {
                 try {
+                    Log.d("MqttConnector", "Message received: ${it.payloadAsString()}")
                     onNewMessage(it.payloadAsJSONObject())
-                }
-                catch (e: Exception){
+                } catch (e: Exception) {
+                    Log.e("MqttConnector", "Error handling message: ${e.message}")
                     onError(e, it.payloadAsString())
                 }
             }
             .send()
-    }
-
-    fun disconnect() {
-        client.disconnectWith()
-            .sessionExpiryInterval(0)
-            .send()
-    }
-
-    companion object {
-        fun disconnect() {
-            disconnect()
-        }
+            .whenComplete { subAck, throwable ->
+                if (throwable != null) {
+                    Log.e("MqttConnector", "Failed to subscribe to $topic: ${throwable.message}")
+                } else {
+                    Log.d("MqttConnector", "Subscribed to topic $topic: $subAck")
+                }
+            }
     }
 }
 
 // Extension Functions
-private fun Mqtt5Publish.payloadAsJSONObject() : JSONObject = JSONObject(payloadAsString())
-private fun Mqtt5Publish.payloadAsString() : String = String(payloadAsBytes, StandardCharsets.UTF_8)
+private fun Mqtt5Publish.payloadAsJSONObject(): JSONObject = JSONObject(payloadAsString())
+private fun Mqtt5Publish.payloadAsString(): String =
+    String(payloadAsBytes, StandardCharsets.UTF_8)

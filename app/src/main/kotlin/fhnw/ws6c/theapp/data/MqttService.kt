@@ -1,59 +1,79 @@
 package fhnw.ws6c.theapp.data
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Intent
 
 
 import android.app.Service
+import android.content.Intent
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
-import fhnw.ws6c.R
+import android.util.Log
+import fhnw.ws6c.theapp.receiver.MqttStaticReceiver
+import org.json.JSONObject
 
 
 class MqttService : Service() {
-
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
+    private lateinit var mqttConnector: MqttConnector
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "MqttService created")
 
-        // Create a notification channel
-        createNotificationChannel()
+        // Initialize MQTT Connector
+        mqttConnector = MqttConnector(this, BROKER_URL)
 
-        // Build a notification for the foreground service
-        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("MQTT Service")
-            .setContentText("MQTT is running in the background")
-            .setSmallIcon(R.drawable.aloe_happy)
-            .build()
+        // Start MQTT Connection
+        connectToBroker()
+    }
 
-        // Start the service in the foreground
-        startForeground(NOTIFICATION_ID, notification)
+    private fun connectToBroker() {
+        mqttConnector.connectAndSubscribe(
+            onNewMessage = { message ->
+                Log.d(TAG, "Received MQTT message: $message")
+                sendNewMessageBroadcast(message)
+            },
+            onError = { exception, payload ->
+                Log.e(TAG, "MQTT error: ${exception.message}, payload: $payload", exception)
+                sendConnectionFailedBroadcast("Error: $payload")
+            },
+            onConnectionFailed = {
+                Log.e(TAG, "Connection to MQTT broker failed")
+                sendConnectionFailedBroadcast("Connection failed.")
+            }
+        )
+    }
+
+    private fun sendNewMessageBroadcast(message: JSONObject) {
+        val intent = Intent().apply {
+            action = MqttStaticReceiver.ACTION_NEW_MESSAGE
+            putExtra(MqttStaticReceiver.EXTRA_MESSAGE, message.toString())
+            setClassName(this@MqttService, "fhnw.ws6c.theapp.receiver.MqttStaticReceiver")
+        }
+        Log.d(TAG, "Broadcasting new message: ${intent.action} with data: $message")
+        sendBroadcast(intent)
+    }
+
+    private fun sendConnectionFailedBroadcast(error: String) {
+        val intent = Intent().apply {
+            action = MqttStaticReceiver.ACTION_CONNECTION_FAILED
+            putExtra(MqttStaticReceiver.EXTRA_ERROR, error)
+            setClassName(this@MqttService, "fhnw.ws6c.theapp.receiver.MqttStaticReceiver")
+        }
+        Log.d(TAG, "Broadcasting connection failed: ${intent.action} with error: $error")
+        sendBroadcast(intent)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        // Disconnect MQTT when the service is destroyed
-        MqttConnector.disconnect()
+        Log.d(TAG, "MqttService destroyed, disconnecting MQTT...")
+        mqttConnector.disconnect()
     }
 
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            "MQTT Service",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 
     companion object {
-        private const val CHANNEL_ID = "mqtt_channel"
-        private const val NOTIFICATION_ID = 1
+        private const val TAG = "MqttService"
+        private const val BROKER_URL = "broker.hivemq.com"
+        const val ACTION_NEW_MESSAGE = "fhnw.ws6c.ACTION_NEW_MESSAGE"
+        const val ACTION_CONNECTION_FAILED = "fhnw.ws6c.ACTION_CONNECTION_FAILED"
+        const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
+        const val EXTRA_ERROR = "EXTRA_ERROR"
     }
 }

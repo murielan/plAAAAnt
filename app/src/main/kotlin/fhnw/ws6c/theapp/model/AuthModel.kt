@@ -70,6 +70,7 @@ class AuthModel(private val plantModel: PlantModel) : ViewModel() {
             putBoolean("is_logged_in", false)
             apply()
         }
+
         clearErrorMessage()
         plantModel.currentScreen = Screen.LOGIN
     }
