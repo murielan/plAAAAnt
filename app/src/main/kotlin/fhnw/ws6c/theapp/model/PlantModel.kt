@@ -40,6 +40,8 @@ class PlantModel(
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val channelId = "fhnw.ws6c.theapp.notifications"
     lateinit var pendingIntent: PendingIntent
+    private val GROUP_KEY_AAAA = "group_key_aaaa"
+    private val GROUP_KEY_OK = "group_key_ok"
 
     var isLoading by mutableStateOf(false)
 
@@ -115,10 +117,11 @@ class PlantModel(
     private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement, notify: Boolean) {
         // notification if needsWater changes
         if ((plant.needsWater.value == false || plant.needsWater.value == null) && measurement.humidity < plant.minHumidity) {
-            if (notify) showNotification(plant.name)
+            if (notify) showAAAANotification(plant.name)
             plant.needsWater.value = true
             plantsThatNeedWaterList += plant
         } else if ((plant.needsWater.value == true || plant.needsWater.value == null) && measurement.humidity > plant.minHumidity) {
+            if (notify) showOKNotification(plant.name)
             plant.needsWater.value = false
             plantsThatNeedWaterList -= plant
         }
@@ -189,18 +192,59 @@ class PlantModel(
         )
     }
 
-    private fun showNotification(plantName: String) {
+    private fun showAAAANotification(plantName: String) {
+        val notificationId = System.currentTimeMillis().toInt()
+
         // Build the notification
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("AAAA!!")
             .setContentText("$plantName braucht Wasser!")
             .setSmallIcon(R.drawable.aloe_sad)
             .setContentIntent(pendingIntent)
+            .setGroup(GROUP_KEY_AAAA)
             .setAutoCancel(true)
             .build()
 
-        // Show the notification
-        notificationManager.notify(1, notification)
+        val summaryNotification = NotificationCompat.Builder(context, channelId)
+            .setContentTitle("AAAA!!")
+            .setContentText("Mehrere Pflanzen benötigen Wasser!")
+            .setSmallIcon(R.drawable.aloe_sad)
+            .setStyle(NotificationCompat.InboxStyle()
+                .setSummaryText("Giessen"))
+            .setGroup(GROUP_KEY_AAAA)
+            .setGroupSummary(true)
+            .build()
+
+        notificationManager.notify(notificationId, notification)
+
+        notificationManager.notify(0, summaryNotification)
+    }
+    private fun showOKNotification(plantName: String) {
+        val notificationId = System.currentTimeMillis().toInt()
+
+        // Build the notification
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setContentTitle("Slurp")
+            .setContentText("$plantName hat wieder genügend Wasser")
+            .setSmallIcon(R.drawable.aloe_happy)
+            .setContentIntent(pendingIntent)
+            .setGroup(GROUP_KEY_OK)
+            .setAutoCancel(true)
+            .build()
+
+        val summaryNotification = NotificationCompat.Builder(context, channelId)
+            .setContentTitle("Slurp")
+            .setContentText("Mehrere Pflanzen haben genügend Wasser!")
+            .setSmallIcon(R.drawable.aloe_sad)
+            .setStyle(NotificationCompat.InboxStyle()
+                .setSummaryText("Slurp"))
+            .setGroup(GROUP_KEY_OK)
+            .setGroupSummary(true)
+            .build()
+
+        notificationManager.notify(notificationId, notification)
+
+        notificationManager.notify(1, summaryNotification)
     }
 
     private fun onFirebaseError(message: String) {
