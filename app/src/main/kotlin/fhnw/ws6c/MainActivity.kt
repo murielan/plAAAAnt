@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fhnw.ws6c.theapp.data.FirebaseService
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
         notificationService = NotificationService(this)
 
         val intent = Intent(this, MqttService::class.java)
-//        startForegroundService(intent)
+        ContextCompat.startForegroundService(this, intent)
         Log.d("MainActivity", "Foreground service started")
 
         model = PlantModel(this, firebaseService, notificationService)

@@ -14,10 +14,8 @@ class MqttService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "MqttService created")
-
-        // Initialize MQTT Connector
         mqttConnector = MqttConnector(this, BROKER_URL)
+        Log.d(TAG, "MqttService created")
 
         // Start MQTT Connection
         connectToBroker()

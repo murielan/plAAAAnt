@@ -34,8 +34,10 @@ class FirebaseService {
             }
     }
 
-    fun getDbMeasurements(onSuccess: (measurements: List<Measurement>)->Unit, onFailure: (error: String) -> Unit) {
-        db.collection("measurements")
+    fun getDbPlantMeasurements(plantId: Int, onSuccess: (measurements: List<Measurement>)->Unit, onFailure: (error: String) -> Unit) {
+        db.collection("plants")
+            .document(plantId.toString())
+            .collection("measurements")
             .orderBy("time", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { result ->
@@ -55,7 +57,11 @@ class FirebaseService {
 
     // if MQTT client receives measurement, add it to firebase and refresh measurements
     fun addMeasurementToPlant(measurement: Measurement, onFailure: (error: String) -> Unit) {
-        db.collection("measurements")
+        val plantId = measurement.sensorId
+
+        db.collection("plants")
+            .document(plantId.toString())
+            .collection("measurements")
             .add(measurement.asHashMap())
             .addOnSuccessListener { documentReference ->
                 Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${documentReference.id}")

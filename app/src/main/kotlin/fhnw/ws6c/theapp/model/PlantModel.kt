@@ -30,8 +30,6 @@ class PlantModel(
     private val backgroundJob = SupervisorJob()
     private val modelScope = CoroutineScope(backgroundJob + Dispatchers.IO)
 
-
-
     var isLoading by mutableStateOf(false)
 
     var currentScreen by mutableStateOf(Screen.LOGIN)
@@ -58,10 +56,9 @@ class PlantModel(
         context.startService(intent)
     }
 
-
-
     fun resetConnectionFailure() {
         connectionFailed = false
+        connectAndSubscribe()
     }
 
     fun getPlants() {
@@ -70,7 +67,7 @@ class PlantModel(
             firebaseService.getPlants(
                 onSuccess = {
                     plantList = it
-                    getDbMeasurements()
+                    getDbPlantMeasurements()
                 },
                 onFailure = {
                     Log.d("notification", "Getting Plants failed. $it")
@@ -117,29 +114,28 @@ class PlantModel(
     }
 
     // get Measurements from Firebase and add to each known plant
-    private fun getDbMeasurements() {
+    private fun getDbPlantMeasurements() {
         modelScope.launch {
-            firebaseService.getDbMeasurements(
-                onSuccess = {
-                    for (measurement in it) {
-                        for (plant in plantList) {
+            for (plant in plantList) {
+                firebaseService.getDbPlantMeasurements(
+                    plant.id,
+                    onSuccess = {
+                        for (measurement in it) {
                             if (plant.sensorId == measurement.sensorId) {
                                 plant.measurements.apply { add(measurement) }
                                 break
                             }
                         }
-                    }
-                    // check with last Measurement if water is needed
-                    for (plant in plantList) {
+                        // check with last Measurement if water is needed
                         if (plant.measurements.lastOrNull() != null) {
                             checkIfWaterNeeded(plant, plant.measurements.last(), false)
                         }
+                    },
+                    onFailure = {
+                        onFirebaseError(it)
                     }
-                },
-                onFailure = {
-                    onFirebaseError(it)
-                }
-            )
+                )
+            }
         }
     }
 

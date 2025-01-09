@@ -13,9 +13,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -23,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fhnw.ws6c.theapp.model.AuthModel
 import fhnw.ws6c.theapp.model.PlantModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(model: PlantModel, authModel: AuthModel) {
@@ -40,24 +37,24 @@ fun HomeScreen(model: PlantModel, authModel: AuthModel) {
             }
         )
 
-        if (model.connectionFailed or model.firebaseError) {
-            LaunchedEffect(snackbarHostState) {
-                scope.launch {
-                    val result = snackbarHostState.showSnackbar(
-                        message = notificationMessage,
-                        actionLabel = "Retry"
-                    )
-                    when (result) {
-                        SnackbarResult.ActionPerformed -> {
-                            model.connectAndSubscribe()
-                            model.resetConnectionFailure()
-                        }
-                        SnackbarResult.Dismissed -> { }
-                    }
-                    model.resetConnectionFailure()
-                }
-            }
-        }
+//        if (model.connectionFailed or model.firebaseError) {
+//            LaunchedEffect(snackbarHostState) {
+//                scope.launch {
+//                    val result = snackbarHostState.showSnackbar(
+//                        message = notificationMessage,
+//                        actionLabel = "Retry"
+//                    )
+//                    when (result) {
+//                        SnackbarResult.ActionPerformed -> {
+//                            model.connectAndSubscribe()
+//                            model.resetConnectionFailure()
+//                        }
+//                        SnackbarResult.Dismissed -> { }
+//                    }
+//                    model.resetConnectionFailure()
+//                }
+//            }
+//        }
     }
 }
 
