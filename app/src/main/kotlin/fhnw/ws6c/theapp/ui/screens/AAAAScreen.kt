@@ -42,7 +42,7 @@ fun AAAAContent(model: PlantModel, innerPadding: PaddingValues) {
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            if (counterPlantsThatNeedWater() > 0) {
+            if (countPlantsThatNeedWater() > 0) {
                 AAAAPlants(model)
             } else {
                 AllGood()

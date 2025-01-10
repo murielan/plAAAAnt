@@ -1,15 +1,11 @@
 package fhnw.ws6c
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fhnw.ws6c.theapp.data.FirebaseService
-import fhnw.ws6c.theapp.data.MqttService
 import fhnw.ws6c.theapp.data.NotificationService
 import fhnw.ws6c.theapp.model.AuthModel
 import fhnw.ws6c.theapp.model.PlantModel
@@ -30,14 +26,11 @@ class MainActivity : ComponentActivity() {
 
         firebaseService = FirebaseService()
         notificationService = NotificationService(this)
+        notificationService.setupNotification()
 
-        val intent = Intent(this, MqttService::class.java)
-        ContextCompat.startForegroundService(this, intent)
-        Log.d("MainActivity", "Foreground service started")
 
         model = PlantModel(this, firebaseService, notificationService)
         model.getPlants()
-        model.connectAndSubscribe()
 
         val sharedPref = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)

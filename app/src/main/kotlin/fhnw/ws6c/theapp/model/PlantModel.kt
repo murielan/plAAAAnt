@@ -1,7 +1,6 @@
 package fhnw.ws6c.theapp.model
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,11 +9,9 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import fhnw.ws6c.theapp.data.FirebaseService
 import fhnw.ws6c.theapp.data.Measurement
-import fhnw.ws6c.theapp.data.MqttService
 import fhnw.ws6c.theapp.data.NotificationService
 import fhnw.ws6c.theapp.data.Plant
 import fhnw.ws6c.theapp.data.defaultPlant
-import fhnw.ws6c.theapp.receiver.MqttStaticReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,20 +42,10 @@ class PlantModel(
 
     val user = Firebase.auth.currentUser
 
-    init {
-        MqttStaticReceiver.setPlantModel(this)
-        notificationService.setupNotification()
-    }
-
-    fun connectAndSubscribe() {
-        // Start the MQTT Service
-        val intent = Intent(context, MqttService::class.java)
-        context.startService(intent)
-    }
-
+    // TODO reconnect
     fun resetConnectionFailure() {
         connectionFailed = false
-        connectAndSubscribe()
+
     }
 
     fun getPlants() {
@@ -67,6 +54,7 @@ class PlantModel(
             firebaseService.getPlants(
                 onSuccess = {
                     plantList = it
+                    Log.e("Measurement", "Got the Plantlist, now trying measurements...")
                     getDbPlantMeasurements()
                 },
                 onFailure = {
@@ -81,32 +69,15 @@ class PlantModel(
     }
 
 
-    fun addMeasurementToPlant(measurement: Measurement) {
-        //persist in firebase
-        modelScope.launch {
-            firebaseService.addMeasurementToPlant(
-                measurement = measurement,
-                onFailure = {
-                    onFirebaseError(it)
-                })
-        }
-        //add to plant in memory
-        for (plant in plantList) {
-            if (plant.sensorId == measurement.sensorId) {
-                plant.measurements.apply { add(measurement) }
-                checkIfWaterNeeded(plant, measurement, true)
-                break
-            }
-        }
-    }
-
     private fun checkIfWaterNeeded(plant: Plant, measurement: Measurement, notify: Boolean) {
         // notification if needsWater changes
         if ((plant.needsWater.value == false || plant.needsWater.value == null) && measurement.humidity < plant.minHumidity) {
+            Log.e("Notification", "should notify AAAAA")
             if (notify) notificationService.showAAAANotification(plant.name)
             plant.needsWater.value = true
             plantsThatNeedWaterList += plant
         } else if ((plant.needsWater.value == true || plant.needsWater.value == null) && measurement.humidity > plant.minHumidity) {
+            Log.e("Notification", "should notify OK")
             if (notify) notificationService.showOKNotification(plant.name)
             plant.needsWater.value = false
             plantsThatNeedWaterList -= plant
@@ -120,15 +91,16 @@ class PlantModel(
                 firebaseService.getDbPlantMeasurements(
                     plant.id,
                     onSuccess = {
-                        for (measurement in it) {
-                            if (plant.sensorId == measurement.sensorId) {
-                                plant.measurements.apply { add(measurement) }
-                                break
-                            }
+                        var notify = false
+                        if( plant.measurements.isNotEmpty()) {
+                            notify = true
+                            plant.measurements.clear()
                         }
+                        plant.measurements.addAll(it)
                         // check with last Measurement if water is needed
                         if (plant.measurements.lastOrNull() != null) {
-                            checkIfWaterNeeded(plant, plant.measurements.last(), false)
+                            Log.e("Notification", "checking if notification needed")
+                            checkIfWaterNeeded(plant, plant.measurements.last(), notify)
                         }
                     },
                     onFailure = {
@@ -139,7 +111,7 @@ class PlantModel(
         }
     }
 
-    fun counterPlantsThatNeedWater(): Int = plantList.count { it.needsWater.value == true }
+    fun countPlantsThatNeedWater(): Int = plantList.count { it.needsWater.value == true }
 
 
 

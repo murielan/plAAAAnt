@@ -135,7 +135,7 @@ fun InfoAboutPlant(currentPlant: Plant) {
                     val lastMeasurement = measurements.lastOrNull()
                     if (lastMeasurement != null) {
                         Text(text = "Bodenfeuchtigkeit: ${lastMeasurement.humidity}%")
-                        Text(text = "Gemessen am: ${lastMeasurement.time}")
+                        Text(text = "Gemessen am: ${lastMeasurement.formattedTime()}")
                     } else {
                         Text(text = "Bodenfeuchtigkeit: unbekannt")
                     }

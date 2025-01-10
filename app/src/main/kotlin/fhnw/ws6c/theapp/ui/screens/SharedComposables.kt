@@ -119,7 +119,7 @@ fun NavigationBottomAppBar(model: PlantModel) {
             ) {
                 Screen.entries.forEach { screen ->
                     if (screen != Screen.PLANT && screen != Screen.SIGNUP && screen != Screen.LOGIN) {
-                        var countPlantThirsty = counterPlantsThatNeedWater()
+                        var countPlantThirsty = countPlantsThatNeedWater()
                         NavigationBarItem(
                             icon = {
                                 if (countPlantThirsty > 0 && screen.icon == Screen.AAAA.icon) {

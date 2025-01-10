@@ -1,42 +1,52 @@
 package fhnw.ws6c.theapp.data
 
+import com.google.firebase.Timestamp
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.random.Random
 
-// { "sensorId": 4, "humidity": 652, "time": 1697804398896}
-data class Measurement(val json: JSONObject) {
+
+data class Measurement(
+    val sensorId: Int = 0,
+    var humidity: Int = 0,
+    var time: Long = 0L,
+    val timestamp: Timestamp? = null
+) {
+
+    // Format "time" (Long) to readable string
+    fun formattedTime(): String {
+        return if (time > 0) {
+            val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
+            sdf.format(Date(time))
+        } else {
+            "Invalid time"
+        }
+    }
+
+    // Format "timestamp" (Firestore Timestamp) to readable string
+    fun formattedTimestamp(): String {
+        return timestamp?.toDate()?.let { date ->
+            val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
+            sdf.format(date)
+        } ?: "Invalid timestamp"
+    }
+
+    // Firestore-compatible HashMap
     fun asHashMap(): HashMap<String, Any> {
         return hashMapOf(
             "sensorId" to sensorId,
             "humidity" to humidity,
-            "time" to time
+            "time" to time,
+            "timestamp" to (timestamp ?: Timestamp.now()) // Use current timestamp if null
         )
     }
 
-    val sensorId: Int = json.optInt("sensorId", 0)
-    val humidity: Int = json.optInt("humidity", 0)
-    val time: String = getTime(System.currentTimeMillis())
-    // TODO get it from the sensor:  getTime(json.optLong("time",0L))
-
-    constructor(jsonString: String) : this(JSONObject(jsonString))
-
-    //constructor with no arguments for serialization
-    constructor() : this(
-        JSONObject(
-            """{
-                "sensorId" : ${Random.nextInt()},
-                "humidity" : ${0},
-                "time" : ${0L}
-            }""".trimMargin()
-        )
+    // Alternative constructor for parsing JSON
+    constructor(json: JSONObject) : this(
+        sensorId = json.optInt("sensorId", 0),
+        humidity = json.optInt("humidity", 0),
+        time = json.optLong("time", 0L),
+        timestamp = json.optLong("timestamp", 0L).takeIf { it > 0 }?.let { Timestamp(Date(it)) }
     )
-}
-
-fun getTime(timestamp: Long): String {
-    val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
-    val date = Date(timestamp)
-    return sdf.format(date)
 }
